@@ -17,5 +17,5 @@ jobs:
         with:
           node-version: '16.x'
 
-      - run: npm i
-      - run: npm run ts-validate 
+      - run: npm ci
+      - run: npm run ts-validate
