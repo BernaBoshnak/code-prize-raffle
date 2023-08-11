@@ -21,31 +21,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  // "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts"],
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
-
-// {
-//   "compilerOptions": {
-//     "target": "es5",
-//     "lib": ["dom", "dom.iterable", "esnext"],
-//     "allowJs": true,
-//     "skipLibCheck": true,
-//     "esModuleInterop": true,
-//     "allowSyntheticDefaultImports": true,
-//     "strict": true,
-//     "forceConsistentCasingInFileNames": true,
-//     "noFallthroughCasesInSwitch": true,
-//     "module": "esnext",
-//     "moduleResolution": "node",
-//     "resolveJsonModule": true,
-//     "isolatedModules": true,
-//     "noEmit": true,
-//     "jsx": "react-jsx",
-//     "noImplicitAny": true,
-//     "types": ["cypress", "node", "@testing-library/cypress"]
-//   },
-//   "include": ["src/**/*.*", "cypress/**/*.*", "tests/**/*.*"],
-//   "references": [{ "path": "./tsconfig.node.json" }]
-// }
