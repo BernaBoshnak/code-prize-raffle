@@ -11,18 +11,23 @@
     "ts-validate": "tsc --noEmit",
     "prettier": "prettier --ignore-path .gitignore \"**/*.+(js|json|ts|tsx)\"",
     "format": "npm run prettier -- --write",
-    "check-format": "npm run prettier -- --check"
+    "check-format": "npm run prettier -- --check",
+    "cy:open-unit": "cypress open --component --browser chrome",
+    "cy:run-unit": "cypress run --component",
+    "test": "npm run cy:run-unit"
   },
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@testing-library/cypress": "^9.0.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
+    "cypress": "^12.17.3",
     "eslint": "^8.45.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-jsx-a11y": "^6.7.1",
