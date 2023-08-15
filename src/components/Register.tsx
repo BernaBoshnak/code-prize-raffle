@@ -1,5 +1,12 @@
 import { useId } from 'react'
-import { Container, Row, Col, Form, Button } from 'react-bootstrap'
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  FloatingLabel,
+} from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { routes } from '../data/routes'
 
@@ -12,38 +19,32 @@ const Register = () => {
             Register Form
           </h2>
           <Form>
-            <Form.Floating className="mb-3">
-              <Form.Control
-                id={useId()}
-                type="email"
-                placeholder="Email address"
-              />
-              <label htmlFor={useId()} className="text-body-tertiary fw-medium">
-                Email address
-              </label>
-            </Form.Floating>
+            <FloatingLabel
+              controlId={useId()}
+              label="Email address"
+              className="mb-3 text-body-tertiary fw-medium"
+            >
+              <Form.Control type="email" placeholder="email" />
+            </FloatingLabel>
 
-            <Form.Floating className="mb-3">
-              <Form.Control
-                id={useId()}
-                type="password"
-                placeholder="Password"
-              />
-              <label htmlFor={useId()} className="text-body-tertiary fw-medium">
-                Password
-              </label>
-            </Form.Floating>
+            <FloatingLabel
+              controlId={useId()}
+              label="Password"
+              className="mb-3 text-body-tertiary fw-medium"
+            >
+              <Form.Control type="password" placeholder="password" />
+            </FloatingLabel>
 
-            <Form.Floating className="mb-3">
+            <FloatingLabel
+              controlId={useId()}
+              label="Confirm password"
+              className="mb-3 text-body-tertiary fw-medium"
+            >
               <Form.Control
-                id={useId()}
                 type="confirm-password"
-                placeholder="Confirm password"
+                placeholder="confirm-password"
               />
-              <label htmlFor={useId()} className="text-body-tertiary fw-medium">
-                Confirm password
-              </label>
-            </Form.Floating>
+            </FloatingLabel>
 
             <Button
               type="submit"
@@ -53,10 +54,10 @@ const Register = () => {
               Create Account
             </Button>
 
-            <div className="mt-4 text-center">
+            <div className="mt-3 text-center">
               <Link
                 to={routes.login}
-                className="mt-4 text-center px-2 link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+                className="text-center px-2 link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
               >
                 Login with existing account
               </Link>
