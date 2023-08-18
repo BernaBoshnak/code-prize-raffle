@@ -1,0 +1,19 @@
+.footer-nav {
+  border-top-color: var(--bs-gray-200);
+
+  .nav-link {
+    --bs-text-opacity: 0.5;
+    color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity));
+
+    &.active,
+    &:hover {
+      --bs-text-opacity: 1;
+      color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity));
+      font-weight: 500;
+    }
+
+    &:hover {
+      background-color: var(--bs-gray-200);
+    }
+  }
+}

@@ -1,6 +1,9 @@
 @import 'bootstrap/scss/mixins/banner';
 @include bsBanner('');
 
+// Custom variables
+@import 'variables';
+
 // scss-docs-start import-stack
 // Configuration
 @import 'bootstrap/scss/functions';
@@ -10,13 +13,18 @@
 @import 'bootstrap/scss/mixins';
 @import 'bootstrap/scss/utilities';
 
-// Custom
+// Components
 @import 'bootstrap/scss/root';
 @import 'bootstrap/scss/reboot';
-@import "bootstrap/scss/containers";
+@import 'bootstrap/scss/containers';
 @import 'bootstrap/scss/grid';
 @import 'bootstrap/scss/forms';
 @import 'bootstrap/scss/buttons';
+@import 'bootstrap/scss/nav';
+
+// Custom
+@import 'common';
+@import 'nav';
 
 // Helpers
 @import 'bootstrap/scss/helpers';
