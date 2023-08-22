@@ -4,4 +4,5 @@ export const routes = <const>{
   register: '/register',
   awards: '/awards',
   menu: '/menu',
+  profile: '/profile',
 }
