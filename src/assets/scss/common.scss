@@ -3,3 +3,7 @@ body,
 #root {
   height: 100%;
 }
+
+.hover-effect:hover {
+  background-color: var(--bs-gray-200);
+}

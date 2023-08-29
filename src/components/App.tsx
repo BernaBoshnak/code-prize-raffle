@@ -1,12 +1,13 @@
 import { Routes, Route } from 'react-router-dom'
-import Dashboard from './Dashboard'
 import Login from './Login'
 import Register from './Register'
 import Menu from './Menu'
 import UserProfile from './UserProfile'
+import Prizes from './prizes/Prizes'
+import ContainerWithNav from './ContainerWithNav'
 import { UserProfileProps } from './UserProfile'
-import '../assets/scss/style.scss'
 import { routes } from '../data/routes'
+import '../assets/scss/style.scss'
 
 type UserProfileOmit = Omit<UserProfileProps, 'onDeleteProfile'>
 
@@ -24,7 +25,14 @@ const App = () => {
   return (
     <>
       <Routes>
-        <Route path={routes.home} element={<Dashboard />} />
+        <Route
+          path={routes.prizes}
+          element={
+            <ContainerWithNav>
+              <Prizes />
+            </ContainerWithNav>
+          }
+        />
         <Route path={routes.login} element={<Login />} />
         <Route path={routes.register} element={<Register />} />
         <Route path={routes.menu} element={<Menu />} />

@@ -7,7 +7,7 @@ interface CodeModalProps {
   closeModal: () => void
 }
 
-const CodeModal: React.FC<CodeModalProps> = ({ showModal, closeModal }) => {
+const CodeModal = ({ showModal, closeModal }: CodeModalProps) => {
   return (
     <Modal
       show={showModal}
