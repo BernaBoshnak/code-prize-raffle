@@ -1,0 +1,20 @@
+.codes-circle {
+  $size: 100px;
+
+  position: relative;
+  width: $size;
+  height: $size;
+  overflow: hidden;
+  text-align: center;
+  border-radius: 50%;
+}
+
+.image-wrapper {
+  position: relative;
+
+  &:before {
+    content: '';
+    display: inline-block;
+    margin-top: 40%;
+  }
+}
