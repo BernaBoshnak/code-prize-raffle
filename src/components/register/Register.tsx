@@ -29,7 +29,7 @@ const Register = () => {
         .matches(/[A-Z]/, getCharacterValidationError('uppercase')),
       confirmPassword: string()
         .required('Please re-type your password.')
-        .oneOf([ref('password')], 'Passwords does not match.'),
+        .oneOf([ref('password')], 'Passwords do not match.'),
     }),
   )
 
@@ -41,17 +41,74 @@ const Register = () => {
     confirmPassword: 'confirmPassword',
   }
 
-  const createInitialState = (): Record<keyof SchemaType, string[]> => ({
-    email: [],
-    password: [],
-    confirmPassword: [],
+  const createInitialState = (): Record<
+    keyof SchemaType,
+    { isTouched: boolean; errorMessages: string[] }
+  > => ({
+    email: {
+      isTouched: false,
+      errorMessages: [],
+    },
+    password: {
+      isTouched: false,
+      errorMessages: [],
+    },
+    confirmPassword: {
+      isTouched: false,
+      errorMessages: [],
+    },
   })
 
   const [formInputValidity, setFormInputValidity] = useState(
     createInitialState(),
   )
 
-  const submitHandler = async (e: React.FormEvent) => {
+  const handleChangeAndBlur = (
+    e: React.FocusEvent | React.ChangeEvent,
+    namesToValidate?: Array<keyof SchemaType>,
+  ) => {
+    const target = e.currentTarget as EventTarget & HTMLInputElement
+    const form = target.form
+
+    if (!form) {
+      return
+    }
+
+    const formData = {} as Record<keyof SchemaType, FormDataEntryValue>
+    for (const [key, value] of new FormData(form)) {
+      formData[key as keyof SchemaType] = value
+    }
+
+    const targetsToValidate = [target]
+    if (namesToValidate) {
+      targetsToValidate.push(...namesToValidate.map((name) => form[name]))
+    }
+
+    targetsToValidate.forEach(({ name }) => {
+      schema
+        .validateAt(name, formData, { abortEarly: false })
+        .then(() => {
+          setFormInputValidity((prevState) => ({
+            ...prevState,
+            [name]: {
+              isTouched: false,
+              errorMessages: [],
+            },
+          }))
+        })
+        .catch((err) => {
+          setFormInputValidity((prevState) => ({
+            ...prevState,
+            [name]: {
+              isTouched: true,
+              errorMessages: err.errors,
+            },
+          }))
+        })
+    })
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
     const {
@@ -77,7 +134,9 @@ const Register = () => {
       .catch(
         (err: { inner: { path: keyof SchemaType; message: string }[] }) => {
           const formValidation = err.inner.reduce((acc, current) => {
-            acc[current.path].push(current.message)
+            acc[current.path].isTouched = true
+            acc[current.path].errorMessages.push(current.message)
+
             return acc
           }, createInitialState())
 
@@ -93,7 +152,7 @@ const Register = () => {
           <h2 className="mb-5 text-center text-primary text-opacity-75">
             Register Form
           </h2>
-          <Form onSubmit={submitHandler}>
+          <Form onSubmit={handleSubmit}>
             <FloatingLabel
               controlId={useId()}
               label="Email address"
@@ -103,11 +162,18 @@ const Register = () => {
                 type="email"
                 name={formFields.email}
                 placeholder="Email address"
-                isInvalid={formInputValidity.email.length > 0}
+                onBlur={handleChangeAndBlur}
+                onChange={handleChangeAndBlur}
+                isInvalid={
+                  formInputValidity.email.isTouched &&
+                  formInputValidity.email.errorMessages.length > 0
+                }
               />
-              <Form.Control.Feedback type="invalid">
-                {formInputValidity.email}
-              </Form.Control.Feedback>
+              {formInputValidity.email.errorMessages.map((error) => (
+                <Form.Control.Feedback key={error} type="invalid">
+                  {error}
+                </Form.Control.Feedback>
+              ))}
             </FloatingLabel>
 
             <FloatingLabel
@@ -119,10 +185,19 @@ const Register = () => {
                 type="password"
                 name={formFields.password}
                 placeholder="Password"
-                isInvalid={formInputValidity.password.length > 0}
+                onBlur={(e) =>
+                  handleChangeAndBlur(e, [formFields.confirmPassword])
+                }
+                onChange={(e) =>
+                  handleChangeAndBlur(e, [formFields.confirmPassword])
+                }
+                isInvalid={
+                  formInputValidity.password.isTouched &&
+                  formInputValidity.password.errorMessages.length > 0
+                }
               />
-              {formInputValidity.password.map((error, index) => (
-                <Form.Control.Feedback key={index} type="invalid">
+              {formInputValidity.password.errorMessages.map((error) => (
+                <Form.Control.Feedback key={error} type="invalid">
                   {error}
                 </Form.Control.Feedback>
               ))}
@@ -137,11 +212,18 @@ const Register = () => {
                 type="password"
                 name={formFields.confirmPassword}
                 placeholder="Confirm password"
-                isInvalid={formInputValidity.confirmPassword.length > 0}
+                onBlur={(e) => handleChangeAndBlur(e, [formFields.password])}
+                onChange={(e) => handleChangeAndBlur(e, [formFields.password])}
+                isInvalid={
+                  formInputValidity.confirmPassword.isTouched &&
+                  formInputValidity.confirmPassword.errorMessages.length > 0
+                }
               />
-              <Form.Control.Feedback type="invalid">
-                {formInputValidity.confirmPassword}
-              </Form.Control.Feedback>
+              {formInputValidity.confirmPassword.errorMessages.map((error) => (
+                <Form.Control.Feedback key={error} type="invalid">
+                  {error}
+                </Form.Control.Feedback>
+              ))}
             </FloatingLabel>
 
             <Button
