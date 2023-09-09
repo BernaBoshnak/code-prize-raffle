@@ -1,4 +1,4 @@
-import { useId, useState } from 'react'
+import { useId, useState, useRef } from 'react'
 import {
   Container,
   Row,
@@ -10,6 +10,7 @@ import {
 import { Link } from 'react-router-dom'
 import { routes } from '../../data/routes'
 import { object, string, ref, InferType } from 'yup'
+import { getFormData } from '../../utils/form'
 
 const Register = () => {
   const getCharacterValidationError = (
@@ -62,6 +63,11 @@ const Register = () => {
   const [formInputValidity, setFormInputValidity] = useState(
     createInitialState(),
   )
+  const formRef = useRef<HTMLFormElement | null>(null)
+
+  const isFormValid = formRef.current
+    ? schema.isValidSync(getFormData(formRef.current))
+    : false
 
   const handleChangeAndBlur = (
     e: React.FocusEvent | React.ChangeEvent,
@@ -74,10 +80,7 @@ const Register = () => {
       return
     }
 
-    const formData = {} as Record<keyof SchemaType, FormDataEntryValue>
-    for (const [key, value] of new FormData(form)) {
-      formData[key as keyof SchemaType] = value
-    }
+    const formData = getFormData<keyof SchemaType>(form)
 
     const targetsToValidate = [target]
     if (namesToValidate) {
@@ -136,7 +139,6 @@ const Register = () => {
           const formValidation = err.inner.reduce((acc, current) => {
             acc[current.path].isTouched = true
             acc[current.path].errorMessages.push(current.message)
-
             return acc
           }, createInitialState())
 
@@ -152,7 +154,7 @@ const Register = () => {
           <h2 className="mb-5 text-center text-primary text-opacity-75">
             Register Form
           </h2>
-          <Form onSubmit={handleSubmit}>
+          <Form ref={formRef} onSubmit={handleSubmit}>
             <FloatingLabel
               controlId={useId()}
               label="Email address"
@@ -185,12 +187,12 @@ const Register = () => {
                 type="password"
                 name={formFields.password}
                 placeholder="Password"
-                onBlur={(e) =>
+                onBlur={(e) => {
                   handleChangeAndBlur(e, [formFields.confirmPassword])
-                }
-                onChange={(e) =>
+                }}
+                onChange={(e) => {
                   handleChangeAndBlur(e, [formFields.confirmPassword])
-                }
+                }}
                 isInvalid={
                   formInputValidity.password.isTouched &&
                   formInputValidity.password.errorMessages.length > 0
@@ -212,8 +214,12 @@ const Register = () => {
                 type="password"
                 name={formFields.confirmPassword}
                 placeholder="Confirm password"
-                onBlur={(e) => handleChangeAndBlur(e, [formFields.password])}
-                onChange={(e) => handleChangeAndBlur(e, [formFields.password])}
+                onBlur={(e) => {
+                  handleChangeAndBlur(e, [formFields.password])
+                }}
+                onChange={(e) => {
+                  handleChangeAndBlur(e, [formFields.password])
+                }}
                 isInvalid={
                   formInputValidity.confirmPassword.isTouched &&
                   formInputValidity.confirmPassword.errorMessages.length > 0
@@ -230,6 +236,7 @@ const Register = () => {
               type="submit"
               variant="primary"
               className="btn-lg w-100 text-white fw-medium fs-4"
+              disabled={!isFormValid}
             >
               Create Account
             </Button>
