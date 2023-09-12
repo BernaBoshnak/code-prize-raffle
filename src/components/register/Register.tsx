@@ -1,4 +1,4 @@
-import { useId, useState, useRef } from 'react'
+import { useId, useState } from 'react'
 import {
   Container,
   Row,
@@ -63,11 +63,6 @@ const Register = () => {
   const [formInputValidity, setFormInputValidity] = useState(
     createInitialState(),
   )
-  const formRef = useRef<HTMLFormElement | null>(null)
-
-  const isFormValid = formRef.current
-    ? schema.isValidSync(getFormData(formRef.current))
-    : false
 
   const handleChangeAndBlur = (
     e: React.FocusEvent | React.ChangeEvent,
@@ -154,7 +149,7 @@ const Register = () => {
           <h2 className="mb-5 text-center text-primary text-opacity-75">
             Register Form
           </h2>
-          <Form ref={formRef} onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit} data-testid="register-form">
             <FloatingLabel
               controlId={useId()}
               label="Email address"
@@ -167,6 +162,10 @@ const Register = () => {
                 onBlur={handleChangeAndBlur}
                 onChange={handleChangeAndBlur}
                 isInvalid={
+                  formInputValidity.email.isTouched &&
+                  formInputValidity.email.errorMessages.length > 0
+                }
+                aria-invalid={
                   formInputValidity.email.isTouched &&
                   formInputValidity.email.errorMessages.length > 0
                 }
@@ -197,6 +196,10 @@ const Register = () => {
                   formInputValidity.password.isTouched &&
                   formInputValidity.password.errorMessages.length > 0
                 }
+                aria-invalid={
+                  formInputValidity.password.isTouched &&
+                  formInputValidity.password.errorMessages.length > 0
+                }
               />
               {formInputValidity.password.errorMessages.map((error) => (
                 <Form.Control.Feedback key={error} type="invalid">
@@ -224,6 +227,10 @@ const Register = () => {
                   formInputValidity.confirmPassword.isTouched &&
                   formInputValidity.confirmPassword.errorMessages.length > 0
                 }
+                aria-invalid={
+                  formInputValidity.confirmPassword.isTouched &&
+                  formInputValidity.confirmPassword.errorMessages.length > 0
+                }
               />
               {formInputValidity.confirmPassword.errorMessages.map((error) => (
                 <Form.Control.Feedback key={error} type="invalid">
@@ -236,7 +243,6 @@ const Register = () => {
               type="submit"
               variant="primary"
               className="btn-lg w-100 text-white fw-medium fs-4"
-              disabled={!isFormValid}
             >
               Create Account
             </Button>
