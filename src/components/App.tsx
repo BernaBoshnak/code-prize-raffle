@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import Login from './Login'
-import Register from './Register'
+import Register from './register/Register'
 import Menu from './Menu'
 import UserProfile from './UserProfile'
 import Prizes from './prizes/Prizes'
