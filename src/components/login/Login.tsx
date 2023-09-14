@@ -9,10 +9,10 @@ import {
 } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 import { routes } from '../../data/routes'
-import { object, string, ref, InferType } from 'yup'
+import { object, string, InferType } from 'yup'
 import useFormValidation from '../hooks/useFormValidation'
 
-const Register = () => {
+const Login = () => {
   const getCharacterValidationError = (
     str: 'digit' | 'lowercase' | 'uppercase',
   ) => `Your password must have at least 1 ${str} character.`
@@ -28,9 +28,6 @@ const Register = () => {
         .matches(/[0-9]/, getCharacterValidationError('digit'))
         .matches(/[a-z]/, getCharacterValidationError('lowercase'))
         .matches(/[A-Z]/, getCharacterValidationError('uppercase')),
-      confirmPassword: string()
-        .required('Please re-type your password.')
-        .oneOf([ref('password')], 'Passwords do not match.'),
     }),
   )
 
@@ -39,7 +36,6 @@ const Register = () => {
   const formFields: { [K in keyof SchemaType]: K } = {
     email: 'email',
     password: 'password',
-    confirmPassword: 'confirmPassword',
   }
 
   const createInitialState = (): Record<
@@ -51,10 +47,6 @@ const Register = () => {
       errorMessages: [],
     },
     password: {
-      isTouched: false,
-      errorMessages: [],
-    },
-    confirmPassword: {
       isTouched: false,
       errorMessages: [],
     },
@@ -75,14 +67,17 @@ const Register = () => {
       <Row className="justify-content-center align-items-center h-100 w-100">
         <Col md={6} lg={4} className="shadow p-5 bg-body-tertiary rounded-4">
           <h2 className="mb-5 text-center text-primary text-opacity-75">
-            Register Form
+            Login Form
           </h2>
           <Form
             noValidate
             onSubmit={(e) =>
-              handleSubmit(e, ['email', 'password', 'confirmPassword'])
+              handleSubmit(
+                e,
+                Object.keys(schema.fields) as Array<keyof SchemaType>,
+              )
             }
-            data-testid="register-form"
+            data-testid="login-form"
           >
             <FloatingLabel
               controlId={useId()}
@@ -120,12 +115,8 @@ const Register = () => {
                 type="password"
                 name={formFields.password}
                 placeholder="Password"
-                onBlur={(e) => {
-                  handleChangeAndBlur(e, [formFields.confirmPassword])
-                }}
-                onChange={(e) => {
-                  handleChangeAndBlur(e, [formFields.confirmPassword])
-                }}
+                onBlur={handleChangeAndBlur}
+                onChange={handleChangeAndBlur}
                 isInvalid={
                   formInputValidity.password.isTouched &&
                   formInputValidity.password.errorMessages.length > 0
@@ -142,51 +133,21 @@ const Register = () => {
               ))}
             </FloatingLabel>
 
-            <FloatingLabel
-              controlId={useId()}
-              label="Confirm password"
-              className="mb-3 text-body-tertiary fw-medium"
-            >
-              <Form.Control
-                type="password"
-                name={formFields.confirmPassword}
-                placeholder="Confirm password"
-                onBlur={(e) => {
-                  handleChangeAndBlur(e, [formFields.password])
-                }}
-                onChange={(e) => {
-                  handleChangeAndBlur(e, [formFields.password])
-                }}
-                isInvalid={
-                  formInputValidity.confirmPassword.isTouched &&
-                  formInputValidity.confirmPassword.errorMessages.length > 0
-                }
-                aria-invalid={
-                  formInputValidity.confirmPassword.isTouched &&
-                  formInputValidity.confirmPassword.errorMessages.length > 0
-                }
-              />
-              {formInputValidity.confirmPassword.errorMessages.map((error) => (
-                <Form.Control.Feedback key={error} type="invalid">
-                  {error}
-                </Form.Control.Feedback>
-              ))}
-            </FloatingLabel>
-
             <Button
               type="submit"
               variant="primary"
               className="btn-lg w-100 text-white fw-medium fs-4"
             >
-              Create Account
+              Log In
             </Button>
           </Form>
           <div className="mt-3 text-center">
+            Not registered?&nbsp;
             <Link
-              to={routes.login}
-              className="text-center px-2 link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+              to={routes.register}
+              className="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
             >
-              Login with existing account
+              Register
             </Link>
           </div>
         </Col>
@@ -195,4 +156,4 @@ const Register = () => {
   )
 }
 
-export default Register
+export default Login
