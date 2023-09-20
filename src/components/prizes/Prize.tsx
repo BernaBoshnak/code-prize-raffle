@@ -49,19 +49,29 @@ const Prize = ({
             </div>
           </Col>
           <Col xs={8} md={9}>
-            <Card.Body>
+            <Card.Body data-testid="card-body">
               <Card.Title className="fs-4">{title}</Card.Title>
               <Card.Text as="div">
-                <div className="mb-2 text-truncate">
-                  In Stock: <span className="text-danger">{stock}</span>/{total}
+                <div
+                  className="mb-2 text-truncate"
+                  data-testid="prizes-in-stock"
+                >
+                  <span className="me-1">In Stock:</span>
+                  <span className="text-danger">{stock}</span>
+                  <span className="visually-hidden">out of</span>
+                  <span className="slash-content"></span>
+                  {total}
                 </div>
-                <div>
+                <div data-testid="required-number-of-codes">
                   <FontAwesomeIcon
                     icon={faCoins}
                     fixedWidth
-                    className="text-danger"
+                    className="text-danger me-1"
                   />
-                  &nbsp;{codesCount}
+                  <span className="visually-hidden">
+                    Required number of codes:
+                  </span>
+                  {codesCount}
                 </div>
               </Card.Text>
             </Card.Body>

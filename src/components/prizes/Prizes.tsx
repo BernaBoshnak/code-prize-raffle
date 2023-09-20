@@ -52,7 +52,7 @@ const Prizes = () => {
         <div className="codes-circle bg-danger mx-auto my-3 fs-3 text-white">
           <div className="position-absolute top-50 start-50 translate-middle">
             <FontAwesomeIcon icon={faCoins} fixedWidth />
-            <div>
+            <div data-testid="codes-amount">
               <span className="visually-hidden">
                 Total number of your codes:
               </span>

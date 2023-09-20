@@ -37,10 +37,19 @@ const Modal = ({
           />
         </div>
         <h4>{title}</h4>
-        <div>
-          <FontAwesomeIcon icon={faTicket} fixedWidth className="text-danger" />
-          &nbsp;
-          <span className="text-danger">{stock}</span>/{total}
+        <div data-testid="remaining-and-total-entries">
+          <FontAwesomeIcon
+            icon={faTicket}
+            fixedWidth
+            className="text-danger me-1"
+          />
+          <span className="visually-hidden">
+            Number of remaining entries and number of total entries:
+          </span>
+          <span className="text-danger">{stock}</span>
+          <span className="visually-hidden">out of</span>
+          <span className="slash-content"></span>
+          {total}
         </div>
         <p>{description}</p>
       </BSModal.Body>
