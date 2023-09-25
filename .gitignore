@@ -27,3 +27,5 @@ dist-ssr
 /cypress/videos
 /cypress/downloads
 /cypress/screenshots
+
+/scripts/code-generator/*.json

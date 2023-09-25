@@ -14,7 +14,8 @@
     "check-format": "npm run prettier -- --check",
     "cy:open-unit": "cypress open --component --browser chrome",
     "cy:run-unit": "cypress run --component",
-    "test": "npm run cy:run-unit"
+    "test:unit": "vitest",
+    "test": "npm run cy:run-unit && npm run test:unit -- --run"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -45,6 +46,7 @@
     "prettier": "3.0.1",
     "sass": "^1.65.1",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vitest": "^0.34.5"
   }
 }
