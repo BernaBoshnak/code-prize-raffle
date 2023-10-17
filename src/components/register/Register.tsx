@@ -1,4 +1,4 @@
-import { useId, useState } from 'react'
+import { useId, useState, useEffect, useRef } from 'react'
 import {
   Container,
   Row,
@@ -20,6 +20,7 @@ const Register = () => {
     str: 'digit' | 'lowercase' | 'uppercase',
   ) => `Your password must have at least 1 ${str} character.`
   const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [schema] = useState(() =>
     object().shape({
@@ -76,6 +77,15 @@ const Register = () => {
 
   const navigate = useNavigate()
 
+  const controllerRef = useRef(new AbortController())
+  useEffect(() => {
+    const controller = controllerRef.current
+
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError(null)
@@ -86,36 +96,33 @@ const Register = () => {
       return
     }
 
-    try {
-      const api = import.meta.env.VITE_REACT_APP_FIREBASE_API
-      const key = import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY
-      const url = `${api}:signUp?key=${key}`
-      const form = e.currentTarget
+    const api = import.meta.env.VITE_REACT_APP_FIREBASE_API_ENDPOINT
+    const key = import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY
+    const url = `${api}:signUp?key=${key}`
+    const form = e.currentTarget
 
-      const res = await postJson(url, {
-        email: form.email.value,
-        password: form.password.value,
-        returnSecureToken: true,
+    try {
+      setIsLoading(true)
+      await postJson(url, {
+        body: {
+          email: form.email.value,
+          password: form.password.value,
+          returnSecureToken: true,
+        },
+        signal: controllerRef.current.signal,
       })
 
-      if (res.ok) {
-        // Registration successful, redirect
-        navigate(routes.login)
-        return
-      }
+      navigate(routes.login)
+    } catch (e) {
+      const error = e as { message: string }
+      const message =
+        e instanceof TypeError // Fetch error (e.g. no internet connection)
+          ? 'Something went wrong!'
+          : formatErrorMessage(error.message)
 
-      const data: { error?: { message?: string } } = await res.json()
-      const msg = data?.error?.message
-
-      const message = msg ? formatErrorMessage(msg) : 'Something went wrong'
-      console.log(message)
-
-      throw new Error(message)
-    } catch (err) {
-      const error = err as { message: string }
-      console.log(error.message)
-
-      setError(error.message)
+      setError(message)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -225,6 +232,7 @@ const Register = () => {
               type="submit"
               variant="primary"
               className="btn-lg w-100 text-white fw-medium fs-4"
+              disabled={isLoading}
             >
               Create Account
             </Button>
