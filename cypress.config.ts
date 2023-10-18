@@ -1,4 +1,5 @@
 import { defineConfig } from 'cypress'
+import { defineConfig as viteDefineConfig } from 'vite'
 
 export default defineConfig({
   video: false,
@@ -7,6 +8,9 @@ export default defineConfig({
     devServer: {
       framework: 'react',
       bundler: 'vite',
+      viteConfig: viteDefineConfig({
+        mode: 'test',
+      }),
     },
   },
 })

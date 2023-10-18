@@ -144,6 +144,9 @@ describe('<Register />', () => {
   })
 
   describe('user registration', () => {
+    const url = '*signUp?key=*'
+    const method = 'POST'
+
     beforeEach(() => {
       cy.findByLabelText(/email address/i).type('email@example.com')
       cy.findByLabelText('Password').type('Password123')
@@ -152,8 +155,7 @@ describe('<Register />', () => {
     })
 
     it('should make the submit button disabled', () => {
-      cy.intercept('**/v1/accounts:signUp?key=*', {
-        method: 'POST',
+      cy.intercept(method, url, {
         statusCode: 400,
         body: null,
         delay: 100,
@@ -167,8 +169,7 @@ describe('<Register />', () => {
     })
 
     it('should successfully register a new user', () => {
-      cy.intercept('**/v1/accounts:signUp?key=*', {
-        method: 'POST',
+      cy.intercept(method, url, {
         statusCode: 200,
         body: null,
       }).as('registerRequest')
@@ -181,8 +182,7 @@ describe('<Register />', () => {
     })
 
     it('should render the error message when user registration fails', () => {
-      cy.intercept('**/v1/accounts:signUp?key=*', {
-        method: 'POST',
+      cy.intercept(method, url, {
         statusCode: 400,
         body: {
           error: {

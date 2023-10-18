@@ -56,7 +56,7 @@ const Login = () => {
     createInitialState(),
   )
 
-  const { handleChangeAndBlur, handleSubmit } = useFormValidation(
+  const { handleChangeAndBlur } = useFormValidation(
     schema,
     setFormInputValidity,
     createInitialState,
@@ -69,16 +69,7 @@ const Login = () => {
           <h2 className="mb-5 text-center text-primary text-opacity-75">
             Login Form
           </h2>
-          <Form
-            noValidate
-            onSubmit={(e) =>
-              handleSubmit(
-                e,
-                Object.keys(schema.fields) as Array<keyof SchemaType>,
-              )
-            }
-            data-testid="login-form"
-          >
+          <Form noValidate data-testid="login-form">
             <FloatingLabel
               controlId={useId()}
               label="Email address"
