@@ -1,8 +1,15 @@
+import { Route, Routes } from 'react-router-dom'
 import Register from '../../src/components/register/Register'
+import { LocationData } from './utils/LocationData'
 
 describe('<Register />', () => {
   beforeEach(() => {
-    cy.mountWithMemoryRouter(<Register />)
+    cy.mountWithMemoryRouter(
+      <Routes>
+        <Route path="/" element={<Register />} />
+        <Route path="*" element={<LocationData pathname />} />
+      </Routes>,
+    )
     cy.findByTestId('register-form').as('registerForm')
   })
 
@@ -136,5 +143,59 @@ describe('<Register />', () => {
     })
   })
 
-  it.skip('should successfully register a new user', () => {})
+  describe('user registration', () => {
+    const url = '*signUp?key=*'
+    const method = 'POST'
+
+    beforeEach(() => {
+      cy.findByLabelText(/email address/i).type('email@example.com')
+      cy.findByLabelText('Password').type('Password123')
+      cy.findByLabelText(/confirm password/i).type('Password123')
+      cy.findByRole('button', { name: /create account/i }).as('submit')
+    })
+
+    it('should make the submit button disabled', () => {
+      cy.intercept(method, url, {
+        statusCode: 400,
+        body: null,
+        delay: 100,
+      }).as('registerRequest')
+
+      cy.get('@submit').should('not.be.disabled')
+      cy.get('@submit').click()
+      cy.get('@submit').should('be.disabled')
+      cy.wait('@registerRequest')
+      cy.get('@submit').should('not.be.disabled')
+    })
+
+    it('should successfully register a new user', () => {
+      cy.intercept(method, url, {
+        statusCode: 200,
+        body: null,
+      }).as('registerRequest')
+
+      cy.get('@submit').click()
+      cy.wait('@registerRequest')
+      cy.findByTestId('location-pathname').should(($el) =>
+        expect($el.text()).to.eq('/login'),
+      )
+    })
+
+    it('should render the error message when user registration fails', () => {
+      cy.intercept(method, url, {
+        statusCode: 400,
+        body: {
+          error: {
+            message: 'user exists',
+          },
+        },
+      }).as('registerRequest')
+
+      cy.get('@submit').click()
+      cy.wait('@registerRequest')
+      cy.findByRole('alert').then(($el) => {
+        expect($el.text()).to.eq('User exists')
+      })
+    })
+  })
 })

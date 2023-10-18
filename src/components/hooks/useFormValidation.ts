@@ -58,37 +58,42 @@ function useFormValidation<
     [schema, stateSetterFn],
   )
 
-  const handleSubmit = useCallback(
-    (e: React.FormEvent, formFields: TSchemaKeys[]) => {
-      e.preventDefault()
-      const form = e.currentTarget as EventTarget & HTMLFormElement
+  const handleValidate = useCallback(
+    (e: React.FormEvent<HTMLFormElement>, formFields: TSchemaKeys[]) => {
+      const form = e.currentTarget
 
       const validationObject = {} as Record<TSchemaKeys, unknown>
       formFields.forEach((field) => {
         validationObject[field] = form[field].value
       })
 
-      schema
-        .validate(validationObject, { abortEarly: false })
-        .then(() => {
-          stateSetterFn(createInitialState())
+      try {
+        schema.validateSync(validationObject, {
+          abortEarly: false,
         })
-        .catch((err: { inner: { path: TSchemaKeys; message: string }[] }) => {
-          const formValidation = err.inner.reduce((acc, current) => {
-            acc[current.path].isTouched = true
-            acc[current.path].errorMessages.push(current.message)
-            return acc
-          }, createInitialState())
 
-          stateSetterFn(formValidation)
-        })
+        stateSetterFn(createInitialState())
+        return true
+      } catch (err) {
+        const knownError = err as {
+          inner: { path: TSchemaKeys; message: string }[]
+        }
+        const formValidation = knownError.inner.reduce((acc, current) => {
+          acc[current.path].isTouched = true
+          acc[current.path].errorMessages.push(current.message)
+          return acc
+        }, createInitialState())
+
+        stateSetterFn(formValidation)
+        return false
+      }
     },
     [schema, stateSetterFn, createInitialState],
   )
 
   return {
     handleChangeAndBlur,
-    handleSubmit,
+    handleValidate,
   }
 }
 
