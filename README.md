@@ -122,3 +122,7 @@ Opens a graphical user interface for testing web applications in a browser.
 #### `npm run cy:run-unit`
 
 Runs Cypress tests to completion. By default, all tests run headlessly.
+
+#### `.env.example`
+
+To set up your app with your own requests and API keys, simply copy the `.env.example` file and rename it to `.env` (or `.env.development` or `.env.production`, based on the environment) then replace the dummy values with real ones.
