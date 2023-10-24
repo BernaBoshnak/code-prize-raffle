@@ -5,6 +5,7 @@ import Menu from './Menu'
 import UserProfile from './UserProfile'
 import Prizes from './prizes/Prizes'
 import ContainerWithNav from './ContainerWithNav'
+import PageNotFound from './PageNotFound'
 import { UserProfileProps } from './UserProfile'
 import { routes } from '../data/routes'
 import '../assets/scss/style.scss'
@@ -47,6 +48,7 @@ const App = () => {
             />
           }
         />
+        <Route path="*" element={<PageNotFound />} />
       </Routes>
     </>
   )
