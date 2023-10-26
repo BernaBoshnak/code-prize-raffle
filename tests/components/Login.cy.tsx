@@ -1,11 +1,16 @@
+import { Route, Routes } from 'react-router-dom'
 import Login from '../../src/components/login/Login'
 import AuthContextProvider from '../../src/components/store/AuthContext'
+import { LocationData } from './utils/LocationData'
 
 describe('<Login />', () => {
   beforeEach(() => {
     cy.mountWithMemoryRouter(
       <AuthContextProvider>
-        <Login />
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="*" element={<LocationData pathname />} />
+        </Routes>
       </AuthContextProvider>,
     )
     cy.findByTestId('login-form').as('loginForm')
@@ -107,6 +112,83 @@ describe('<Login />', () => {
   it('should show "log in" submit button', () => {
     cy.get('@loginForm').within(() => {
       cy.findByRole('button', { name: /log in/i })
+    })
+  })
+
+  describe('user login', () => {
+    const url = '*signInWithPassword?key=*'
+    const method = 'POST'
+
+    beforeEach(() => {
+      cy.findByLabelText(/email address/i).type('email@example.com')
+      cy.findByLabelText('Password').type('Password123')
+      cy.findByRole('button', { name: /log in/i }).as('submit')
+    })
+
+    it('should make the submit button disabled', () => {
+      cy.intercept(method, url, {
+        statusCode: 400,
+        body: null,
+        delay: 100,
+      }).as('loginRequest')
+
+      cy.get('@submit').should('not.be.disabled')
+      cy.get('@submit').click()
+      cy.get('@submit').should('be.disabled')
+      cy.wait('@loginRequest')
+      cy.get('@submit').should('not.be.disabled')
+    })
+
+    it('should successfully log in the user', () => {
+      cy.intercept(method, url, {
+        fixture: 'login-success.json',
+        statusCode: 200,
+      }).as('loginRequest')
+
+      cy.get('@submit').click()
+      cy.wait('@loginRequest')
+      cy.findByTestId('location-pathname').should(($el) =>
+        expect($el.text()).to.eq('/prizes'),
+      )
+    })
+
+    it('should render the error message when the user email is wrong', () => {
+      cy.intercept(method, url, {
+        fixture: 'login-wrong-email.json',
+        statusCode: 400,
+      }).as('loginRequest')
+
+      cy.get('@submit').click()
+      cy.wait('@loginRequest')
+      cy.findByRole('alert').then(($el) => {
+        expect($el.text()).to.eq('Email not found')
+      })
+    })
+
+    it('should render the error message when the user password is wrong', () => {
+      cy.intercept(method, url, {
+        fixture: 'login-wrong-password.json',
+        statusCode: 400,
+      }).as('loginRequest')
+
+      cy.get('@submit').click()
+      cy.wait('@loginRequest')
+      cy.findByRole('alert').then(($el) => {
+        expect($el.text()).to.eq('Invalid password')
+      })
+    })
+
+    it('should render the generic error message something is wrong', () => {
+      cy.intercept(method, url, {
+        body: null,
+        statusCode: 400,
+      }).as('loginRequest')
+
+      cy.get('@submit').click()
+      cy.wait('@loginRequest')
+      cy.findByRole('alert').then(($el) => {
+        expect($el.text()).to.contain('Something went wrong')
+      })
     })
   })
 })
