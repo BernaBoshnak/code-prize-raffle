@@ -1,8 +1,13 @@
 import Login from '../../src/components/login/Login'
+import AuthContextProvider from '../../src/components/store/AuthContext'
 
 describe('<Login />', () => {
   beforeEach(() => {
-    cy.mountWithMemoryRouter(<Login />)
+    cy.mountWithMemoryRouter(
+      <AuthContextProvider>
+        <Login />
+      </AuthContextProvider>,
+    )
     cy.findByTestId('login-form').as('loginForm')
   })
 
