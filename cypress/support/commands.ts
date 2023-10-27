@@ -27,16 +27,34 @@ import './commands/mountWithBrowserRouter'
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
-//
-// declare global {
-//   namespace Cypress {
-//     interface Chainable {
-//       login(email: string, password: string): Chainable<void>
-//       drag(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       dismiss(subject: string, options?: Partial<TypeOptions>): Chainable<Element>
-//       visit(originalFn: CommandOriginalFn, url: string, options: Partial<VisitOptions>): Chainable<Element>
-//     }
-//   }
-// }
+
+Cypress.Commands.add(
+  'localStorageSetItem',
+  (...args: Parameters<typeof localStorage.setItem>) => {
+    return cy.window().then((win) => win.localStorage.setItem(...args))
+  },
+)
+
+Cypress.Commands.add(
+  'localStorageGetItem',
+  (...args: Parameters<typeof localStorage.getItem>) => {
+    return cy.window().then((win) => win.localStorage.getItem(...args))
+  },
+)
+
+declare global {
+  namespace Cypress {
+    interface Chainable {
+      localStorageSetItem(
+        ...args: Parameters<typeof localStorage.setItem>
+      ): Chainable<Cypress.AUTWindow>
+      localStorageGetItem(
+        ...args: Parameters<typeof localStorage.getItem>
+      ):
+        | Chainable<Cypress.AUTWindow | null>
+        | Chainable<Cypress.AUTWindow | string>
+    }
+  }
+}
 
 export {}
