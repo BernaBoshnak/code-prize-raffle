@@ -1,9 +1,10 @@
-import { createContext, useState, useContext } from 'react'
+import { createContext, useState, useContext, useMemo } from 'react'
 
 type IAuthContext = {
   token: string | undefined
   isLoggedIn: boolean
   storeToken: (token: NonNullable<IAuthContext['token']>) => void
+  logout: () => void
 }
 
 const AuthContext = createContext<IAuthContext | undefined>(undefined)
@@ -22,23 +23,30 @@ const retrieveStoredToken = () => {
 
 const AuthContextProvider = (props: { children: React.ReactNode }) => {
   const tokenData = retrieveStoredToken()
-
-  const initialToken: string | undefined = tokenData?.token
+  const initialToken = tokenData?.token
 
   const [token, setToken] = useState(initialToken)
   const isLoggedIn = Boolean(token)
 
+  const logout = () => {
+    setToken(undefined)
+    localStorage.removeItem('token')
+  }
+
   const storeToken = (token: string) => {
     setToken(token)
-
     localStorage.setItem('token', token)
   }
 
-  const contextValue: IAuthContext = {
-    token,
-    isLoggedIn,
-    storeToken,
-  }
+  const contextValue: IAuthContext = useMemo(
+    () => ({
+      token,
+      isLoggedIn,
+      storeToken,
+      logout,
+    }),
+    [isLoggedIn, token],
+  )
 
   return <AuthContext.Provider value={contextValue} {...props} />
 }
