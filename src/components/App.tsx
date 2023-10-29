@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import Login from './login/Login'
 import Register from './register/Register'
 import Menu from './Menu'
@@ -6,6 +6,8 @@ import UserProfile from './UserProfile'
 import Prizes from './prizes/Prizes'
 import ContainerWithNav from './ContainerWithNav'
 import PageNotFound from './PageNotFound'
+import GuardNotAuthenticated from './route-guards/GuardNotAuthenticated'
+import GuardAuthenticated from './route-guards/GuardAuthenticated'
 import { UserProfileProps } from './UserProfile'
 import { routes } from '../data/routes'
 import '../assets/scss/style.scss'
@@ -24,8 +26,14 @@ const App = () => {
   }
 
   return (
-    <>
-      <Routes>
+    <Routes>
+      <Route element={<GuardAuthenticated to={routes.prizes} />}>
+        <Route path={routes.home} element={<Navigate to={routes.login} />} />
+        <Route path={routes.login} element={<Login />} />
+        <Route path={routes.register} element={<Register />} />
+      </Route>
+      <Route element={<GuardNotAuthenticated to={routes.login} />}>
+        <Route path={routes.home} element={<Navigate to={routes.prizes} />} />
         <Route
           path={routes.prizes}
           element={
@@ -34,8 +42,6 @@ const App = () => {
             </ContainerWithNav>
           }
         />
-        <Route path={routes.login} element={<Login />} />
-        <Route path={routes.register} element={<Register />} />
         <Route path={routes.menu} element={<Menu />} />
         <Route
           path={routes.profile}
@@ -48,9 +54,9 @@ const App = () => {
             />
           }
         />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </>
+      </Route>
+      <Route path="*" element={<PageNotFound />} />
+    </Routes>
   )
 }
 
