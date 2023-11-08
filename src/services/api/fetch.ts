@@ -11,8 +11,11 @@ const fetchJson = <TRet>(
       ...options,
       body: JSON.stringify(options.body),
       headers: {
-        'Content-Type': 'application/json',
         ...options.headers,
+        'Content-Type':
+          options.headers && 'Content-Type' in options.headers
+            ? options.headers['Content-Type']
+            : 'application/json',
       },
     })
       .then(async (res) => {
