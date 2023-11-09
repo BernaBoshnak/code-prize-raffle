@@ -26,7 +26,12 @@ const fetchJson = <TRet>(
           reject(error)
         }
       })
-      .catch((err) => reject(err))
+      .catch((error) => {
+        if (error.name !== 'AbortError') {
+          reject(error)
+        }
+        // Swallow AbortError
+      })
   })
 }
 

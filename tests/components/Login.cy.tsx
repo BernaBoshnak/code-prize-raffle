@@ -1,17 +1,20 @@
 import { Route, Routes } from 'react-router-dom'
 import Login from '../../src/components/login/Login'
-import AuthContextProvider from '../../src/components/store/AuthContext'
 import { LocationData } from './utils/LocationData'
+import TokenValidationContextProvider from '../../src/components/store/TokenValidationContext'
+import AuthContextProvider from '../../src/components/store/AuthContext'
 
 describe('<Login />', () => {
   beforeEach(() => {
     cy.mountWithMemoryRouter(
-      <AuthContextProvider>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="*" element={<LocationData pathname />} />
-        </Routes>
-      </AuthContextProvider>,
+      <TokenValidationContextProvider>
+        <AuthContextProvider>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="*" element={<LocationData pathname />} />
+          </Routes>
+        </AuthContextProvider>
+      </TokenValidationContextProvider>,
     )
     cy.findByTestId('login-form').as('loginForm')
   })
@@ -120,9 +123,11 @@ describe('<Login />', () => {
     const method = 'POST'
 
     beforeEach(() => {
-      cy.findByLabelText(/email address/i).type('email@example.com')
-      cy.findByLabelText('Password').type('Password123')
-      cy.findByRole('button', { name: /log in/i }).as('submit')
+      cy.get('@loginForm').within(() => {
+        cy.findByLabelText(/email address/i).type('email@example.com')
+        cy.findByLabelText('Password').type('Password123')
+        cy.findByRole('button', { name: /log in/i }).as('submit')
+      })
     })
 
     it('should make the submit button disabled', () => {

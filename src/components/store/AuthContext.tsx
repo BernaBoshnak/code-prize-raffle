@@ -6,11 +6,11 @@ import {
   useCallback,
   useContext,
 } from 'react'
-import { postJson } from '../../services/api/fetch'
 import { RefreshTokenResponse } from '../../services/api/response/login'
 import usePersistedState from '../hooks/usePersistedState'
 import { calculateExpiresAt } from '../utils/date'
 import useAbortController from '../hooks/useAbortController'
+import { useTokenValidationContext } from './TokenValidationContext'
 
 type TokenData = {
   idToken: RefreshTokenResponse['id_token']
@@ -36,22 +36,11 @@ const calculateRemainingTime = (expiresAt: TokenData['expiresAt']) => {
   return remainingDuration
 }
 
-const getNewToken = (refreshToken: TokenData['refreshToken']) => {
-  const api = import.meta.env.VITE_REACT_APP_FIREBASE_REFRESH_TOKEN_ENDPOINT
-  const key = import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY
-  const url = `${api}=${key}`
-
-  return postJson<RefreshTokenResponse>(url, {
-    body: {
-      grant_type: 'refresh_token',
-      refresh_token: refreshToken,
-    },
-  })
-}
-
 const AuthContextProvider = (props: { children: React.ReactNode }) => {
   const [tokenObject, setTokenObject] =
     usePersistedState<TokenData>('tokenData')
+
+  const { isValidToken, postJson } = useTokenValidationContext()
   const isLoggedIn = Boolean(tokenObject)
 
   const logout = useCallback(() => {
@@ -73,13 +62,36 @@ const AuthContextProvider = (props: { children: React.ReactNode }) => {
       const key = import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY
       const url = `${api}:lookup?key=${key}`
 
-      return postJson(url, {
+      postJson(url, {
         body: { idToken },
         signal: controller.signal,
       })
     },
-    [controller.signal],
+    [controller.signal, postJson],
   )
+
+  const getNewToken = useCallback(
+    (refreshToken: TokenData['refreshToken']) => {
+      const api = import.meta.env.VITE_REACT_APP_FIREBASE_REFRESH_TOKEN_ENDPOINT
+      const key = import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY
+      const url = `${api}=${key}`
+
+      return postJson<RefreshTokenResponse>(url, {
+        body: {
+          grant_type: 'refresh_token',
+          refresh_token: refreshToken,
+        },
+      })
+    },
+    [postJson],
+  )
+
+  // Logout the user if the token is invalid
+  useEffect(() => {
+    if (!isValidToken) {
+      logout()
+    }
+  }, [isValidToken, logout])
 
   // Fetch user data once on initial app load
   const isInitialUserDataFetched = useRef(false)
@@ -113,7 +125,12 @@ const AuthContextProvider = (props: { children: React.ReactNode }) => {
 
       return () => clearTimeout(timeout)
     }
-  }, [tokenObject?.expiresAt, tokenObject?.refreshToken, storeToken])
+  }, [
+    tokenObject?.expiresAt,
+    tokenObject?.refreshToken,
+    storeToken,
+    getNewToken,
+  ])
 
   const contextValue: TAuthContext = useMemo(
     () => ({

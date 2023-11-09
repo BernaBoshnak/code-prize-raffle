@@ -1,17 +1,20 @@
 import { Route, Routes } from 'react-router-dom'
-import AuthContextProvider from '../../src/components/store/AuthContext'
 import Menu from '../../src/components/Menu'
 import { LocationData } from './utils/LocationData'
+import TokenValidationContextProvider from '../../src/components/store/TokenValidationContext'
+import AuthContextProvider from '../../src/components/store/AuthContext'
 
 describe('user logout', () => {
   beforeEach(() => {
     cy.mountWithMemoryRouter(
-      <AuthContextProvider>
-        <Routes>
-          <Route path="/" element={<Menu />} />
-          <Route path="*" element={<LocationData pathname />} />
-        </Routes>
-      </AuthContextProvider>,
+      <TokenValidationContextProvider>
+        <AuthContextProvider>
+          <Routes>
+            <Route path="/" element={<Menu />} />
+            <Route path="*" element={<LocationData pathname />} />
+          </Routes>
+        </AuthContextProvider>
+      </TokenValidationContextProvider>,
     )
   })
 

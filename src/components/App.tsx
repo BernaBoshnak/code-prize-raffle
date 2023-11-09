@@ -22,7 +22,7 @@ const App = () => {
   }
 
   const handleDeleteProfile = () => {
-    console.log('Profile deleted')
+    // Profile deleted
   }
 
   return (
