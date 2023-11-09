@@ -16,6 +16,7 @@ import { formatErrorMessage } from '../utils/formMessage'
 import { postJson } from '../../services/api/fetch'
 import { useAuthContext } from '../store/AuthContext'
 import { LoginResponse } from '../../services/api/response/login'
+import { calculateExpiresAt } from '../utils/date'
 
 const Login = () => {
   const getCharacterValidationError = (
@@ -108,7 +109,15 @@ const Login = () => {
         signal: controllerRef.current.signal,
       })
 
-      storeToken(res.idToken)
+      if (res) {
+        const expiresAt = calculateExpiresAt(res.expiresIn)
+
+        storeToken({
+          idToken: res.idToken,
+          refreshToken: res.refreshToken,
+          expiresAt,
+        })
+      }
 
       // Login successful, redirect
       navigate(routes.prizes)
