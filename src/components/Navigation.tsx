@@ -3,7 +3,7 @@ import { Nav } from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBarcode, faGift, faBars } from '@fortawesome/free-solid-svg-icons'
 import { routes } from '../data/routes'
-import CodeModal from './CodeModal'
+import CodeModal from './modals/CodeModal'
 
 const Navigation = () => {
   const [showCodeModal, setShowCodeModal] = useState(false)
