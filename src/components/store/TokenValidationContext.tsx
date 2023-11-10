@@ -4,13 +4,13 @@ import {
   useContext,
   useMemo,
   useCallback,
+  useEffect,
 } from 'react'
-import { Navigate } from 'react-router-dom'
-import { routes } from '../../data/routes'
 import * as fetchUtils from '../../services/api/fetch'
+import InvalidTokenModal from '../modals/InvalidTokenModal'
 
 type TTokenValidationContext = {
-  isValidToken: boolean
+  shouldRedirectToLogin: boolean
   postJson: <T>(...args: Parameters<typeof fetchUtils.postJson>) => Promise<T>
 }
 
@@ -24,6 +24,7 @@ const TokenValidationContextProvider = ({
   children: React.ReactNode
 }) => {
   const [isValidToken, setIsValidToken] = useState(true)
+  const [shouldRedirectToLogin, setShouldRedirectToLogin] = useState(false)
 
   const postJson = useCallback(
     <T,>(...args: Parameters<typeof fetchUtils.postJson>) => {
@@ -38,19 +39,32 @@ const TokenValidationContextProvider = ({
     [],
   )
 
+  useEffect(() => {
+    if (!isValidToken) {
+      const timeout = setTimeout(() => {
+        setShouldRedirectToLogin(true)
+        setIsValidToken(true)
+      }, 3000)
+
+      return () => {
+        clearTimeout(timeout)
+      }
+    }
+  }, [isValidToken])
+
   const contextValue = useMemo(
     () => ({
-      isValidToken,
+      shouldRedirectToLogin,
       postJson,
     }),
-    [isValidToken, postJson],
+    [shouldRedirectToLogin, postJson],
   )
 
   return (
     <TokenValidationContext.Provider value={contextValue}>
       <>
         {children}
-        {!isValidToken && <Navigate to={routes.login} />}
+        <InvalidTokenModal show={!isValidToken} />
       </>
     </TokenValidationContext.Provider>
   )

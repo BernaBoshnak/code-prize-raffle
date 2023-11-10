@@ -40,7 +40,7 @@ const AuthContextProvider = (props: { children: React.ReactNode }) => {
   const [tokenObject, setTokenObject] =
     usePersistedState<TokenData>('tokenData')
 
-  const { isValidToken, postJson } = useTokenValidationContext()
+  const { shouldRedirectToLogin, postJson } = useTokenValidationContext()
   const isLoggedIn = Boolean(tokenObject)
 
   const logout = useCallback(() => {
@@ -88,10 +88,10 @@ const AuthContextProvider = (props: { children: React.ReactNode }) => {
 
   // Logout the user if the token is invalid
   useEffect(() => {
-    if (!isValidToken) {
+    if (shouldRedirectToLogin) {
       logout()
     }
-  }, [isValidToken, logout])
+  }, [shouldRedirectToLogin, logout])
 
   // Fetch user data once on initial app load
   const isInitialUserDataFetched = useRef(false)
