@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress'
 import { defineConfig as viteDefineConfig } from 'vite'
+import { moduleAliases } from './vite.config'
 
 export default defineConfig({
   video: false,
@@ -10,6 +11,7 @@ export default defineConfig({
       bundler: 'vite',
       viteConfig: viteDefineConfig({
         mode: 'test',
+        ...moduleAliases,
       }),
     },
   },

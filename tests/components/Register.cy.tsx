@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import Register from '../../src/components/register/Register'
+import Register from '@components/register/Register'
 import { LocationData } from './utils/LocationData'
 
 describe('<Register />', () => {

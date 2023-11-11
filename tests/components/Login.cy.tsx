@@ -1,8 +1,8 @@
 import { Route, Routes } from 'react-router-dom'
-import Login from '../../src/components/login/Login'
+import Login from '@components/login/Login'
+import AuthContextProvider from '@components/store/AuthContext'
+import TokenValidationContextProvider from '@components/store/TokenValidationContext'
 import { LocationData } from './utils/LocationData'
-import TokenValidationContextProvider from '../../src/components/store/TokenValidationContext'
-import AuthContextProvider from '../../src/components/store/AuthContext'
 
 describe('<Login />', () => {
   beforeEach(() => {

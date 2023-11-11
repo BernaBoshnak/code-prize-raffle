@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import {
-  upperCaseFirstLetter,
   replaceCharactersInString,
+  upperCaseFirstLetter,
 } from '../../../src/utils/string'
 
 describe('"string" utils', () => {

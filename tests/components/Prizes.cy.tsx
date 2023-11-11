@@ -1,4 +1,4 @@
-import Prizes from '../../src/components/prizes/Prizes'
+import Prizes from '@components/prizes/Prizes'
 
 describe('<Prizes />', () => {
   beforeEach(() => {

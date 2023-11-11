@@ -1,6 +1,6 @@
-import { Modal as BSModal, Image, Button, CloseButton } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Modal as BSModal, Button, CloseButton, Image } from 'react-bootstrap'
 import { faTicket } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Prize as TPrize } from '../../types/api/prize'
 
 type ModalProps = {

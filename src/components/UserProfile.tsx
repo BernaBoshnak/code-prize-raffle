@@ -1,6 +1,6 @@
-import { Container, Card, Row, Col, ListGroup, Button } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap'
 import { faBarcode, faUser } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export interface UserProfileProps {
   username: string

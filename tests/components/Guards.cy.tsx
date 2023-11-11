@@ -1,9 +1,9 @@
-import { Routes, Route } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
+import GuardAuthenticated from '@components/route-guards/GuardAuthenticated'
+import GuardNotAuthenticated from '@components/route-guards/GuardNotAuthenticated'
+import AuthContextProvider from '@components/store/AuthContext'
+import TokenValidationContextProvider from '@components/store/TokenValidationContext'
 import { LocationData } from './utils/LocationData'
-import GuardAuthenticated from '../../src/components/route-guards/GuardAuthenticated'
-import GuardNotAuthenticated from '../../src/components/route-guards/GuardNotAuthenticated'
-import TokenValidationContextProvider from '../../src/components/store/TokenValidationContext'
-import AuthContextProvider from '../../src/components/store/AuthContext'
 
 describe('guards', () => {
   describe('<GuardAuthenticated />', () => {
