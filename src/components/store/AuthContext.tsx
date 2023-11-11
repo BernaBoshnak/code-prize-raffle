@@ -74,7 +74,7 @@ const AuthContextProvider = (props: { children: React.ReactNode }) => {
     (refreshToken: TokenData['refreshToken']) => {
       const api = import.meta.env.VITE_REACT_APP_FIREBASE_REFRESH_TOKEN_ENDPOINT
       const key = import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY
-      const url = `${api}=${key}`
+      const url = `${api}?key=${key}`
 
       return postJson<RefreshTokenResponse>(url, {
         body: {
