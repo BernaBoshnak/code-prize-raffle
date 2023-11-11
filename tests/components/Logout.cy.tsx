@@ -1,8 +1,8 @@
 import { Route, Routes } from 'react-router-dom'
-import Menu from '../../src/components/Menu'
+import Menu from '@components/Menu'
+import AuthContextProvider from '@components/store/AuthContext'
+import TokenValidationContextProvider from '@components/store/TokenValidationContext'
 import { LocationData } from './utils/LocationData'
-import TokenValidationContextProvider from '../../src/components/store/TokenValidationContext'
-import AuthContextProvider from '../../src/components/store/AuthContext'
 
 describe('user logout', () => {
   beforeEach(() => {

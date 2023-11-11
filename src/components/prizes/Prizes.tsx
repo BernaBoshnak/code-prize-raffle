@@ -1,8 +1,8 @@
 import { Container } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCoins } from '@fortawesome/free-solid-svg-icons'
-import Prize from './Prize'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Prize as TPrize } from '../../types/api/prize'
+import Prize from './Prize'
 
 const prizes: TPrize[] = [
   {

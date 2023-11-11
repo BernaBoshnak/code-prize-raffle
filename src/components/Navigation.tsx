@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Nav } from 'react-bootstrap'
+import CodeModal from '@components/modals/CodeModal'
+import { faBarcode, faBars, faGift } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBarcode, faGift, faBars } from '@fortawesome/free-solid-svg-icons'
 import { routes } from '../data/routes'
-import CodeModal from './modals/CodeModal'
 
 const Navigation = () => {
   const [showCodeModal, setShowCodeModal] = useState(false)

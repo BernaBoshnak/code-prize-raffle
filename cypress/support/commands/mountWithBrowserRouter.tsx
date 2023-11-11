@@ -1,6 +1,5 @@
-import { mount } from 'cypress/react18'
+import { mount, MountOptions, MountReturn } from 'cypress/react18'
 import { MemoryRouter, MemoryRouterProps } from 'react-router-dom'
-import { MountOptions, MountReturn } from 'cypress/react18'
 
 declare global {
   namespace Cypress {

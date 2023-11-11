@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Row, Col, Card } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Card, Col, Row } from 'react-bootstrap'
 import { faCoins } from '@fortawesome/free-solid-svg-icons'
-import Modal from './Modal'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Prize as TPrize } from '../../types/api/prize'
+import Modal from './Modal'
 
 const Prize = ({
   image,

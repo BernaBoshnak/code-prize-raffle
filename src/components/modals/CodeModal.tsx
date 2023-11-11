@@ -1,7 +1,7 @@
 import { useId } from 'react'
-import { Modal, Button, Form } from 'react-bootstrap'
+import { Button, Form, Modal } from 'react-bootstrap'
+import { faCheck, faCoins } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCoins, faCheck } from '@fortawesome/free-solid-svg-icons'
 
 interface CodeModalProps {
   showModal: boolean

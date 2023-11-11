@@ -1,13 +1,13 @@
 import {
   createContext,
-  useState,
-  useContext,
-  useMemo,
   useCallback,
+  useContext,
   useEffect,
+  useMemo,
+  useState,
 } from 'react'
-import * as fetchUtils from '../../services/api/fetch'
-import InvalidTokenModal from '../modals/InvalidTokenModal'
+import InvalidTokenModal from '@components/modals/InvalidTokenModal'
+import * as fetchUtils from '@services/api/fetch'
 
 type TTokenValidationContext = {
   shouldRedirectToLogin: boolean

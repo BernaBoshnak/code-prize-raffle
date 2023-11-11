@@ -1,5 +1,5 @@
-import { useAuthContext } from '../store/AuthContext'
-import { Navigate, Outlet, NavigateProps } from 'react-router-dom'
+import { Navigate, NavigateProps, Outlet } from 'react-router-dom'
+import { useAuthContext } from '@components/store/AuthContext'
 
 const GuardAuthenticated = ({ to }: Pick<NavigateProps, 'to'>) => {
   const { isLoggedIn } = useAuthContext()

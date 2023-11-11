@@ -1,19 +1,19 @@
-import { useId, useState, useEffect, useRef } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import {
-  Container,
-  Row,
-  Col,
-  Form,
-  Button,
-  FloatingLabel,
   Alert,
+  Button,
+  Col,
+  Container,
+  FloatingLabel,
+  Form,
+  Row,
 } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
+import { InferType, object, ref, string } from 'yup'
+import useFormValidation from '@components/hooks/useFormValidation'
+import { formatErrorMessage } from '@components/utils/formMessage'
+import { postJson } from '@services/api/fetch'
 import { routes } from '../../data/routes'
-import { object, string, ref, InferType } from 'yup'
-import useFormValidation from '../hooks/useFormValidation'
-import { formatErrorMessage } from '../utils/formMessage'
-import { postJson } from '../../services/api/fetch'
 
 const Register = () => {
   const getCharacterValidationError = (

@@ -1,12 +1,12 @@
 import { Container, ListGroup } from 'react-bootstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faUser,
-  faPersonWalkingArrowRight,
-} from '@fortawesome/free-solid-svg-icons'
-import { routes } from '../data/routes'
-import { useAuthContext } from './store/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import { useAuthContext } from '@components/store/AuthContext'
+import {
+  faPersonWalkingArrowRight,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { routes } from '../data/routes'
 
 const Menu = () => {
   const { logout } = useAuthContext()

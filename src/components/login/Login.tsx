@@ -1,22 +1,22 @@
-import { useId, useState, useEffect, useRef } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import {
-  Container,
-  Row,
-  Col,
-  Form,
-  Button,
-  FloatingLabel,
   Alert,
+  Button,
+  Col,
+  Container,
+  FloatingLabel,
+  Form,
+  Row,
 } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
+import { InferType, object, string } from 'yup'
+import useFormValidation from '@components/hooks/useFormValidation'
+import { useAuthContext } from '@components/store/AuthContext'
+import { calculateExpiresAt } from '@components/utils/date'
+import { formatErrorMessage } from '@components/utils/formMessage'
+import { postJson } from '@services/api/fetch'
+import { LoginResponse } from '@services/api/response/login'
 import { routes } from '../../data/routes'
-import { object, string, InferType } from 'yup'
-import useFormValidation from '../hooks/useFormValidation'
-import { formatErrorMessage } from '../utils/formMessage'
-import { postJson } from '../../services/api/fetch'
-import { useAuthContext } from '../store/AuthContext'
-import { LoginResponse } from '../../services/api/response/login'
-import { calculateExpiresAt } from '../utils/date'
 
 const Login = () => {
   const getCharacterValidationError = (
