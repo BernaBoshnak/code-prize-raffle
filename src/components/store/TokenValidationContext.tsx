@@ -18,11 +18,15 @@ const TokenValidationContext = createContext<
   TTokenValidationContext | undefined
 >(undefined)
 
+type TokenValidationContextProviderProps = {
+  children: React.ReactNode
+  redirectTimeout?: number
+}
+
 const TokenValidationContextProvider = ({
   children,
-}: {
-  children: React.ReactNode
-}) => {
+  redirectTimeout = 3000,
+}: TokenValidationContextProviderProps) => {
   const [isValidToken, setIsValidToken] = useState(true)
   const [shouldRedirectToLogin, setShouldRedirectToLogin] = useState(false)
 
@@ -44,13 +48,13 @@ const TokenValidationContextProvider = ({
       const timeout = setTimeout(() => {
         setShouldRedirectToLogin(true)
         setIsValidToken(true)
-      }, 3000)
+      }, redirectTimeout)
 
       return () => {
         clearTimeout(timeout)
       }
     }
-  }, [isValidToken])
+  }, [isValidToken, redirectTimeout])
 
   const contextValue = useMemo(
     () => ({

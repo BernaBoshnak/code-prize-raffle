@@ -18,10 +18,10 @@ describe('user logout', () => {
     )
   })
 
-  it('should log out user by removing the token from local storage', () => {
-    cy.localStorageSetItem('token', 'fake-token')
+  it.only('should log out user by removing the token from local storage', () => {
+    cy.localStorageSetItem('tokenData', 'fake-token')
     cy.findByRole('button', { name: /exit/i }).as('logout btn').click()
-    cy.localStorageGetItem('token')
+    cy.localStorageGetItem('tokenData').should('eq', null)
     cy.findByTestId('location-pathname').should(($el) =>
       expect($el.text()).to.eq('/login'),
     )

@@ -37,8 +37,21 @@ Cypress.Commands.add(
 
 Cypress.Commands.add(
   'localStorageGetItem',
-  (...args: Parameters<typeof localStorage.getItem>) => {
-    return cy.window().then((win) => win.localStorage.getItem(...args))
+  <T>(...args: Parameters<typeof localStorage.getItem>) => {
+    return cy.window().then((win) => {
+      const value = win.localStorage.getItem(...args)
+      let parsedValue = null
+
+      if (value != null) {
+        try {
+          parsedValue = JSON.parse(value) as T
+        } catch (e) {
+          parsedValue = value
+        }
+      }
+
+      return cy.wrap(parsedValue)
+    })
   },
 )
 
@@ -48,11 +61,9 @@ declare global {
       localStorageSetItem(
         ...args: Parameters<typeof localStorage.setItem>
       ): Chainable<Cypress.AUTWindow>
-      localStorageGetItem(
+      localStorageGetItem<T>(
         ...args: Parameters<typeof localStorage.getItem>
-      ):
-        | Chainable<Cypress.AUTWindow | null>
-        | Chainable<Cypress.AUTWindow | string>
+      ): Cypress.Chainable<T | null>
     }
   }
 }
