@@ -12,7 +12,7 @@ import { calculateExpiresAt } from '@components/utils/date'
 import { RefreshTokenResponse } from '@services/api/response/login'
 import { useTokenValidationContext } from './TokenValidationContext'
 
-type TokenData = {
+export type TokenData = {
   idToken: RefreshTokenResponse['id_token']
   refreshToken: RefreshTokenResponse['refresh_token']
   expiresAt: number
@@ -25,7 +25,7 @@ type TAuthContext = {
   logout: () => void
 }
 
-const TIMEOUT_BEFORE_EXPIRY = 1 * 60 * 1000 // 1 minute in ms
+export const TIMEOUT_BEFORE_EXPIRY = 1 * 60 * 1000 // 1 minute in ms
 
 const AuthContext = createContext<TAuthContext | undefined>(undefined)
 
@@ -36,7 +36,7 @@ const calculateRemainingTime = (expiresAt: TokenData['expiresAt']) => {
   return remainingDuration
 }
 
-const AuthContextProvider = (props: { children: React.ReactNode }) => {
+const AuthContextProvider = (props: { children?: React.ReactNode }) => {
   const [tokenObject, setTokenObject] =
     usePersistedState<TokenData>('tokenData')
 
@@ -74,7 +74,7 @@ const AuthContextProvider = (props: { children: React.ReactNode }) => {
     (refreshToken: TokenData['refreshToken']) => {
       const api = import.meta.env.VITE_REACT_APP_FIREBASE_REFRESH_TOKEN_ENDPOINT
       const key = import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY
-      const url = `${api}=${key}`
+      const url = `${api}?key=${key}`
 
       return postJson<RefreshTokenResponse>(url, {
         body: {

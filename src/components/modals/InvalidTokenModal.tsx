@@ -3,7 +3,11 @@ import { Modal } from 'react-bootstrap'
 
 const InvalidTokenModal = (props: React.ComponentProps<typeof Modal>) => {
   return (
-    <Modal {...props} dialogClassName="modal-dialog modal-dialog-centered">
+    <Modal
+      {...props}
+      dialogClassName="modal-dialog modal-dialog-centered"
+      data-testid="invalid-token-modal"
+    >
       <Modal.Header>
         <h4>Invalid session</h4>
       </Modal.Header>

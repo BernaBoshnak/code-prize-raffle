@@ -2,9 +2,17 @@ import { useCallback, useEffect, useState } from 'react'
 
 const usePersistedState = <T>(key: string, listen = false) => {
   const [value, setValue] = useState<T | null>(() => {
-    const val = localStorage.getItem(key)
+    const value = localStorage.getItem(key)
 
-    return val ? JSON.parse(val) : val
+    if (value != null) {
+      try {
+        return JSON.parse(value) as T
+      } catch (e) {
+        return value as T
+      }
+    }
+
+    return null
   })
 
   const persistValue = useCallback(
