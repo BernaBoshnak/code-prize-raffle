@@ -1,12 +1,12 @@
 import { Modal as BSModal, Button, CloseButton, Image } from 'react-bootstrap'
 import { faTicket } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Prize as TPrize } from '../../types/api/prize'
+import { Prize as TPrize } from '@services/api/response/prize'
 
 type ModalProps = {
   showModal: boolean
   closeModal: () => void
-} & Pick<TPrize, 'title' | 'description' | 'stock' | 'total' | 'image'>
+} & TPrize
 
 const Modal = ({
   showModal,
@@ -15,7 +15,7 @@ const Modal = ({
   description,
   stock,
   total,
-  image,
+  image_url,
 }: ModalProps) => {
   return (
     <BSModal
@@ -31,8 +31,8 @@ const Modal = ({
         </div>
         <div className="image-wrapper mt-1 mb-3">
           <Image
-            src={image.url}
-            alt={image.alt}
+            src={image_url}
+            alt={title}
             className="position-absolute top-50 start-50 translate-middle w-100 h-100 object-fit-cover"
           />
         </div>

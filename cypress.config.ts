@@ -1,6 +1,7 @@
 import { defineConfig } from 'cypress'
-import { defineConfig as viteDefineConfig } from 'vite'
-import { moduleAliases } from './vite.config'
+import { mergeConfig } from 'vite'
+import { CypressEsm } from '@cypress/vite-plugin-cypress-esm'
+import viteConfig from './vite.config'
 
 export default defineConfig({
   video: false,
@@ -9,9 +10,13 @@ export default defineConfig({
     devServer: {
       framework: 'react',
       bundler: 'vite',
-      viteConfig: viteDefineConfig({
+      viteConfig: mergeConfig(viteConfig, {
+        plugins: [CypressEsm()],
         mode: 'test',
-        ...moduleAliases,
+        server: {
+          host: 'localhost',
+          port: 4000,
+        },
       }),
     },
   },

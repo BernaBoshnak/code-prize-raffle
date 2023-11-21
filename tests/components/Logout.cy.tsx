@@ -18,7 +18,7 @@ describe('user logout', () => {
     )
   })
 
-  it.only('should log out user by removing the token from local storage', () => {
+  it('should log out user by removing the token from local storage', () => {
     cy.localStorageSetItem('tokenData', 'fake-token')
     cy.findByRole('button', { name: /exit/i }).as('logout btn').click()
     cy.localStorageGetItem('tokenData').should('eq', null)
