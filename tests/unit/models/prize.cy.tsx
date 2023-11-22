@@ -1,4 +1,4 @@
-import * as firebase from 'firebase/firestore'
+import * as firestore from 'firebase/firestore'
 import { db } from '@services/api/firebase-config'
 import { getPrizes } from '@services/models/prize'
 
@@ -10,8 +10,10 @@ describe('prizes model', () => {
       const resolvedValue = { [key]: doc }
       const collectionResult = { key: 'value' }
 
-      cy.stub(firebase, 'collection').as('collection').returns(collectionResult)
-      cy.stub(firebase, 'getDocs')
+      cy.stub(firestore, 'collection')
+        .as('collection')
+        .returns(collectionResult)
+      cy.stub(firestore, 'getDocs')
         .as('getDocs')
         .resolves({ docs: [{ id: key, data: cy.stub().returns(doc) }] })
 

@@ -10,14 +10,20 @@ export default defineConfig({
     devServer: {
       framework: 'react',
       bundler: 'vite',
-      viteConfig: mergeConfig(viteConfig, {
-        plugins: [CypressEsm()],
-        mode: 'test',
-        server: {
-          host: 'localhost',
-          port: 4000,
-        },
-      }),
+      viteConfig: () => {
+        return mergeConfig(viteConfig, {
+          plugins: [
+            CypressEsm({
+              ignoreModuleList: ['react-router', 'react-router-dom'],
+            }),
+          ],
+          mode: 'test',
+          server: {
+            host: 'localhost',
+            port: 4000,
+          },
+        })
+      },
     },
   },
 })
