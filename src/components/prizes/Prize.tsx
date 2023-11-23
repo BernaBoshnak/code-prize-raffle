@@ -2,18 +2,12 @@ import { useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
 import { faCoins } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Prize as TPrize } from '../../types/api/prize'
+import { Prize as TPrize } from '@services/api/response/prize'
 import Modal from './Modal'
 
-const Prize = ({
-  image,
-  title,
-  description,
-  stock,
-  total,
-  codesCount,
-}: TPrize) => {
+const Prize = (props: TPrize) => {
   const [showModal, setShowModal] = useState(false)
+  const { image_url, title, stock, total, codes_count } = props
 
   const handleClick = () => {
     setShowModal(true)
@@ -42,9 +36,9 @@ const Prize = ({
           <Col xs={4} md={3} className="position-relative">
             <div className="position-absolute top-0 end-0 bottom-0 start-0 d-flex justify-content-center align-items-center">
               <Card.Img
-                src={image.url}
+                src={image_url}
                 className="rounded-end-0 w-100 h-100 object-fit-cover"
-                alt={image.alt}
+                alt={title}
               />
             </div>
           </Col>
@@ -71,22 +65,14 @@ const Prize = ({
                   <span className="visually-hidden">
                     Required number of codes:
                   </span>
-                  {codesCount}
+                  {codes_count}
                 </div>
               </Card.Text>
             </Card.Body>
           </Col>
         </Row>
       </Card>
-      <Modal
-        title={title}
-        description={description}
-        stock={stock}
-        total={total}
-        image={image}
-        showModal={showModal}
-        closeModal={closeModal}
-      />
+      <Modal showModal={showModal} closeModal={closeModal} {...props} />
     </>
   )
 }

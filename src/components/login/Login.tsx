@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useId, useState } from 'react'
 import {
   Alert,
   Button,
@@ -10,6 +10,7 @@ import {
 } from 'react-bootstrap'
 import { Link, useNavigate } from 'react-router-dom'
 import { InferType, object, string } from 'yup'
+import useAbortController from '@components/hooks/useAbortController'
 import useFormValidation from '@components/hooks/useFormValidation'
 import { useAuthContext } from '@components/store/AuthContext'
 import { calculateExpiresAt } from '@components/utils/date'
@@ -73,20 +74,11 @@ const Login = () => {
   const { storeToken } = useAuthContext()
 
   const navigate = useNavigate()
-
-  const controllerRef = useRef(new AbortController())
-  useEffect(() => {
-    const controller = controllerRef.current
-
-    return () => {
-      controller.abort()
-    }
-  }, [])
+  const controller = useAbortController()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError(null)
-
     const isValid = handleValidate(e, ['email', 'password'])
 
     if (!isValid) {
@@ -106,7 +98,7 @@ const Login = () => {
           password: form.password.value,
           returnSecureToken: true,
         },
-        signal: controllerRef.current.signal,
+        signal: controller.signal,
       })
 
       if (res) {

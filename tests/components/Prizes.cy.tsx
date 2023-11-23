@@ -1,27 +1,54 @@
-import Prizes from '@components/prizes/Prizes'
+import Prizes, { TPrizes } from '@components/prizes/Prizes'
+import { Prize, PrizeId } from '@services/api/response/prize'
+import * as prizeModel from '@services/models/prize'
+
+const mountPrizes = (resolvedValue: TPrizes) => {
+  cy.stub(prizeModel, 'getPrizes').as('getPrizes').resolves(resolvedValue)
+
+  cy.mountWithMemoryRouter(<Prizes />)
+
+  cy.findByRole('heading', { name: /loading/i })
+  cy.get('@getPrizes').should('be.calledOnce')
+}
 
 describe('<Prizes />', () => {
-  beforeEach(() => {
-    cy.mountWithMemoryRouter(<Prizes />)
+  beforeEach(function () {
+    cy.fixture('prize').then((prizeFixture: Prize) => {
+      const key = 'fakeKey' as PrizeId
+      this.prizesModelData = { [key]: prizeFixture } as TPrizes
+    })
   })
 
-  it('should display the total number of codes', () => {
+  it('should display the total number of codes', function () {
+    mountPrizes(this.prizesModelData)
     cy.findByTestId('codes-amount').within(($el) => {
       expect($el.text()).to.match(/total number of your codes:\s?\d+/i)
     })
   })
 
-  it('should show page heading', () => {
+  it('should show the "no promotions available at this time" title', () => {
+    mountPrizes({} as TPrizes)
+    cy.findByRole('heading', {
+      name: /no promotions available at this time/i,
+    })
+  })
+
+  it('should show the "all promotions" title', function () {
+    mountPrizes(this.prizesModelData)
     cy.findByRole('heading', { name: /all promotions/i })
   })
 
-  describe('prize card', () => {
+  describe('prize card', function () {
+    beforeEach(function () {
+      mountPrizes(this.prizesModelData)
+    })
+
     it('should render a card', () => {
       cy.findAllByRole('button', { name: /card title/i })
         .eq(0)
         .within(() => {
           cy.findByRole('img', {
-            name: /card image/i,
+            name: /card title/i,
           })
           cy.findByTestId('card-body').within(() => {
             cy.findByText(/card title/i)
@@ -42,7 +69,7 @@ describe('<Prizes />', () => {
         .click()
       cy.findByRole('dialog').within(() => {
         cy.findByRole('img', {
-          name: /card image/i,
+          name: /card title/i,
         })
         cy.findByRole('heading', {
           name: /card title/i,
