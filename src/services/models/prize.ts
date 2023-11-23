@@ -1,6 +1,6 @@
-import { collection, getDocs } from 'firebase/firestore'
 import { db } from '@services/api/firebase-config'
 import { Prize, PrizeId } from '@services/api/response/prize'
+import { collection, getDocs } from '@services/firebase/firestore'
 
 export const getPrizes = async () => {
   const prizesCollection = collection(db, 'prizes')

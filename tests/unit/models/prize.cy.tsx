@@ -1,5 +1,5 @@
-import * as firestore from 'firebase/firestore'
 import { db } from '@services/api/firebase-config'
+import * as firestore from '@services/firebase/firestore'
 import { getPrizes } from '@services/models/prize'
 
 describe('prizes model', () => {

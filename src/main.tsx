@@ -1,3 +1,4 @@
+import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from '@components/App'
@@ -6,11 +7,13 @@ import TokenValidationContextProvider from '@components/store/TokenValidationCon
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
-  <BrowserRouter>
-    <TokenValidationContextProvider>
-      <AuthContextProvider>
-        <App />
-      </AuthContextProvider>
-    </TokenValidationContextProvider>
-  </BrowserRouter>,
+  <StrictMode>
+    <BrowserRouter>
+      <TokenValidationContextProvider>
+        <AuthContextProvider>
+          <App />
+        </AuthContextProvider>
+      </TokenValidationContextProvider>
+    </BrowserRouter>
+  </StrictMode>,
 )
