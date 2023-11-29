@@ -1,20 +1,22 @@
 import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap'
+import { useUserContext } from '@components/store/UserContext'
 import { faBarcode, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-export interface UserProfileProps {
-  username: string
-  email: string
-  pinCodes: string[]
-  onDeleteProfile: () => void
-}
+const UserProfile: React.FC = () => {
+  const { userData } = useUserContext()
 
-const UserProfile: React.FC<UserProfileProps> = ({
-  username,
-  email,
-  pinCodes,
-  onDeleteProfile,
-}) => {
+  const handleDeleteProfile = () => {
+    // console.log('Profile deleted')
+  }
+
+  if (!userData) {
+    // TODO loading component
+    return null
+  }
+
+  const { codes, email, user_name: userName } = userData
+
   return (
     <Container className="py-5">
       <Card>
@@ -29,7 +31,7 @@ const UserProfile: React.FC<UserProfileProps> = ({
                 <span className="ps-2">Entered PIN Codes</span>
               </div>
               <ListGroup variant="flush" as="ul" className="d-inline-block">
-                {pinCodes.map((code, index) => (
+                {codes.map((code, index) => (
                   <ListGroup.Item
                     key={index}
                     as="li"
@@ -45,10 +47,10 @@ const UserProfile: React.FC<UserProfileProps> = ({
                 <FontAwesomeIcon icon={faUser} fixedWidth />
                 <span className="ps-2">User</span>
               </div>
-              <div className="py-1">Username: {username}</div>
+              <div className="py-1">Username: {userName}</div>
               <div className="py-1">Email: {email}</div>
               <br />
-              <Button variant="danger" onClick={onDeleteProfile}>
+              <Button variant="danger" onClick={handleDeleteProfile}>
                 Delete Profile
               </Button>
             </Col>

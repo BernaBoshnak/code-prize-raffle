@@ -7,23 +7,11 @@ import Prizes from '@components/prizes/Prizes'
 import Register from '@components/register/Register'
 import GuardAuthenticated from '@components/route-guards/GuardAuthenticated'
 import GuardNotAuthenticated from '@components/route-guards/GuardNotAuthenticated'
-import UserProfile, { UserProfileProps } from '@components/UserProfile'
+import UserProfile from '@components/UserProfile'
 import '@styles/style.scss'
 import { routes } from '../data/routes'
 
-type UserProfileOmit = Omit<UserProfileProps, 'onDeleteProfile'>
-
 const App = () => {
-  const userData: UserProfileOmit = {
-    username: 'Mike',
-    email: 'mike@gmail.com',
-    pinCodes: ['1234', '5678', '9012'],
-  }
-
-  const handleDeleteProfile = () => {
-    // Profile deleted
-  }
-
   return (
     <Routes>
       <Route element={<GuardAuthenticated to={routes.prizes} />}>
@@ -42,17 +30,7 @@ const App = () => {
           }
         />
         <Route path={routes.menu} element={<Menu />} />
-        <Route
-          path={routes.profile}
-          element={
-            <UserProfile
-              username={userData.username}
-              email={userData.email}
-              pinCodes={userData.pinCodes}
-              onDeleteProfile={handleDeleteProfile}
-            />
-          }
-        />
+        <Route path={routes.profile} element={<UserProfile />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

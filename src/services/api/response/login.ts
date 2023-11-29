@@ -1,15 +1,12 @@
-export type LoginResponse = {
+import { RegisterResponse } from '@services/api/response/register'
+
+export interface LoginResponse extends RegisterResponse {
   displayName: string
-  email: string
-  expiresIn: string
-  idToken: string
   kind: string
-  localId: string
-  refreshToken: string
   registered: boolean
 }
 
-export type RefreshTokenResponse = {
+export interface RefreshTokenResponse {
   expires_in: string
   token_type: string
   refresh_token: string
