@@ -71,7 +71,7 @@ const Login = () => {
     createInitialState,
   )
 
-  const { storeToken } = useAuthContext()
+  const { setTokenObject } = useAuthContext()
 
   const navigate = useNavigate()
   const controller = useAbortController()
@@ -104,10 +104,11 @@ const Login = () => {
       if (res) {
         const expiresAt = calculateExpiresAt(res.expiresIn)
 
-        storeToken({
+        setTokenObject({
           idToken: res.idToken,
           refreshToken: res.refreshToken,
           expiresAt,
+          localId: res.localId,
         })
       }
 

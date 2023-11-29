@@ -14,6 +14,8 @@ import useAbortController from '@components/hooks/useAbortController'
 import useFormValidation from '@components/hooks/useFormValidation'
 import { formatErrorMessage } from '@components/utils/formMessage'
 import { postJson } from '@services/api/fetch'
+import { RegisterResponse } from '@services/api/response/register'
+import { createUser } from '@services/models/user'
 import { routes } from '../../data/routes'
 
 const Register = () => {
@@ -96,7 +98,7 @@ const Register = () => {
 
     try {
       setIsLoading(true)
-      await postJson(url, {
+      const res = await postJson<RegisterResponse>(url, {
         body: {
           email: form.email.value,
           password: form.password.value,
@@ -105,9 +107,16 @@ const Register = () => {
         signal: controller.signal,
       })
 
+      await createUser(res.localId, {
+        email: form.email.value,
+        user_name: '',
+        codes: [],
+      })
+
       navigate(routes.login)
     } catch (e) {
       const error = e as { message: string }
+
       const message =
         e instanceof TypeError // Fetch error (e.g. no internet connection)
           ? 'Something went wrong!'

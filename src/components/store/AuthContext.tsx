@@ -9,19 +9,24 @@ import {
 import useAbortController from '@components/hooks/useAbortController'
 import usePersistedState from '@components/hooks/usePersistedState'
 import { calculateExpiresAt } from '@components/utils/date'
-import { RefreshTokenResponse } from '@services/api/response/login'
+import {
+  LoginResponse,
+  RefreshTokenResponse,
+} from '@services/api/response/login'
 import { useTokenValidationContext } from './TokenValidationContext'
 
 export type TokenData = {
-  idToken: RefreshTokenResponse['id_token']
-  refreshToken: RefreshTokenResponse['refresh_token']
+  idToken: LoginResponse['idToken']
+  localId?: LoginResponse['localId']
+  refreshToken: LoginResponse['refreshToken']
   expiresAt: number
 }
 
 type TAuthContext = {
   idToken: TokenData['idToken'] | null
+  localId: TokenData['localId']
   isLoggedIn: boolean
-  storeToken: (props: TokenData) => void
+  setTokenObject: (value: TokenData | null) => void
   logout: () => void
 }
 
@@ -47,22 +52,15 @@ const AuthContextProvider = (props: { children?: React.ReactNode }) => {
     setTokenObject(null)
   }, [setTokenObject])
 
-  const storeToken = useCallback(
-    (props: TokenData) => {
-      setTokenObject({ ...props })
-    },
-    [setTokenObject],
-  )
-
   const controller = useAbortController()
 
   const getUserData = useCallback(
-    (idToken: TokenData['idToken']) => {
+    async (idToken: TokenData['idToken']) => {
       const api = import.meta.env.VITE_REACT_APP_FIREBASE_API_ENDPOINT
       const key = import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY
       const url = `${api}:lookup?key=${key}`
 
-      postJson(url, {
+      await postJson(url, {
         body: { idToken },
         signal: controller.signal,
       })
@@ -106,6 +104,7 @@ const AuthContextProvider = (props: { children?: React.ReactNode }) => {
     }
   }, [getUserData, tokenObject?.idToken])
 
+  // Refresh token
   useEffect(() => {
     if (tokenObject?.expiresAt) {
       const remainingTime = calculateRemainingTime(tokenObject.expiresAt)
@@ -115,7 +114,8 @@ const AuthContextProvider = (props: { children?: React.ReactNode }) => {
         getNewToken(tokenObject.refreshToken).then((response) => {
           const expiresAt = calculateExpiresAt(response.expires_in)
 
-          storeToken({
+          setTokenObject({
+            ...tokenObject,
             idToken: response.id_token,
             refreshToken: response.refresh_token,
             expiresAt,
@@ -125,21 +125,23 @@ const AuthContextProvider = (props: { children?: React.ReactNode }) => {
 
       return () => clearTimeout(timeout)
     }
-  }, [
-    tokenObject?.expiresAt,
-    tokenObject?.refreshToken,
-    storeToken,
-    getNewToken,
-  ])
+  }, [tokenObject, getNewToken, setTokenObject])
 
   const contextValue: TAuthContext = useMemo(
     () => ({
       idToken: tokenObject?.idToken ?? null,
+      localId: tokenObject?.localId,
       isLoggedIn,
-      storeToken,
       logout,
+      setTokenObject,
     }),
-    [isLoggedIn, tokenObject?.idToken, logout, storeToken],
+    [
+      isLoggedIn,
+      tokenObject?.idToken,
+      tokenObject?.localId,
+      logout,
+      setTokenObject,
+    ],
   )
 
   return <AuthContext.Provider value={contextValue} {...props} />

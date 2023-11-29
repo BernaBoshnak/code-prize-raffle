@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import Register from '@components/register/Register'
+import * as user from '@services/models/user'
 import { LocationData } from './utils/LocationData'
 
 describe('<Register />', () => {
@@ -168,14 +169,19 @@ describe('<Register />', () => {
       cy.get('@submit').should('not.be.disabled')
     })
 
-    it('should successfully register a new user', () => {
+    it.only('should successfully register a new user', () => {
       cy.intercept(method, url, {
         statusCode: 200,
-        body: null,
+        body: {
+          localId: 'abc',
+        },
       }).as('registerRequest')
+
+      cy.stub(user, 'createUser').as('createUser')
 
       cy.get('@submit').click()
       cy.wait('@registerRequest')
+      cy.get('@createUser').should('be.calledOnce')
       cy.findByTestId('location-pathname').should(($el) =>
         expect($el.text()).to.eq('/login'),
       )

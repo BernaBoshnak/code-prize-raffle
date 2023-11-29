@@ -20,7 +20,26 @@ module.exports = {
     '@typescript-eslint/no-namespace': 'off',
     'react-refresh/only-export-components': 'off',
     'no-console': 'error',
+    'no-restricted-imports': [
+      'error',
+      {
+        patterns: [
+          {
+            group: ['firebase/*'],
+            message: 'Import from "@services/firebase" instead',
+          },
+        ],
+      },
+    ],
   },
+  overrides: [
+    {
+      files: ['src/services/firebase/*'],
+      rules: {
+        'no-restricted-imports': 'off',
+      },
+    },
+  ],
   settings: {
     react: {
       version: 'detect',
