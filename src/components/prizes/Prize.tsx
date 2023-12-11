@@ -5,9 +5,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Prize as TPrize } from '@services/api/response/prize'
 import Modal from './Modal'
 
-const Prize = (props: TPrize) => {
+export interface PrizeProps extends TPrize {
+  id: string
+}
+
+const Prize = (props: PrizeProps) => {
   const [showModal, setShowModal] = useState(false)
-  const { image_url, title, stock, total, codes_count } = props
+  const {
+    image_url: imageUrl,
+    title,
+    amount,
+    codes_count: codesCount,
+    assigned_users_count: assignedUsersCount,
+  } = props
 
   const handleClick = () => {
     setShowModal(true)
@@ -36,7 +46,7 @@ const Prize = (props: TPrize) => {
           <Col xs={4} md={3} className="position-relative">
             <div className="position-absolute top-0 end-0 bottom-0 start-0 d-flex justify-content-center align-items-center">
               <Card.Img
-                src={image_url}
+                src={imageUrl}
                 className="rounded-end-0 w-100 h-100 object-fit-cover"
                 alt={title}
               />
@@ -51,10 +61,10 @@ const Prize = (props: TPrize) => {
                   data-testid="prizes-in-stock"
                 >
                   <span className="me-1">In Stock:</span>
-                  <span className="text-danger">{stock}</span>
+                  <span className="text-danger">{assignedUsersCount}</span>
                   <span className="visually-hidden">out of</span>
                   <span className="slash-content"></span>
-                  {total}
+                  {amount}
                 </div>
                 <div data-testid="required-number-of-codes">
                   <FontAwesomeIcon
@@ -65,7 +75,7 @@ const Prize = (props: TPrize) => {
                   <span className="visually-hidden">
                     Required number of codes:
                   </span>
-                  {codes_count}
+                  {codesCount}
                 </div>
               </Card.Text>
             </Card.Body>

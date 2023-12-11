@@ -14,10 +14,10 @@ export const getUser = async (localId: LoginResponse['localId']) => {
 
 export const createUser = async (
   localId: RegisterResponse['localId'],
-  props: GetUserDataResponse,
+  data: GetUserDataResponse,
 ) => {
   const userCollection = doc(db, 'users', localId)
-  const docRef = await setDoc(userCollection, props)
+  const docRef = await setDoc(userCollection, data)
 
   return docRef
 }

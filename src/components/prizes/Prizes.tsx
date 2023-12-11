@@ -3,7 +3,7 @@ import { Container } from 'react-bootstrap'
 import { faCoins } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { PrizeId, Prize as TPrize } from '@services/api/response/prize'
-import { getPrizes } from '@services/models/prize'
+import { getPrizesWithUsersCount } from '@services/models/prize'
 import Prize from './Prize'
 
 export type TPrizes = Record<PrizeId, TPrize>
@@ -12,7 +12,7 @@ const Prizes = () => {
   const [prizes, setPrizes] = useState<TPrizes | undefined>()
 
   useEffect(() => {
-    getPrizes().then((prizes) => {
+    getPrizesWithUsersCount().then((prizes) => {
       setPrizes(prizes)
     })
   }, [])
@@ -41,7 +41,7 @@ const Prizes = () => {
         </h3>
         {prizes &&
           Object.entries(prizes).map(([id, prize]) => (
-            <Prize key={id} {...prize} />
+            <Prize key={id} id={id} {...prize} />
           ))}
       </Container>
     </>
