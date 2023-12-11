@@ -6,7 +6,7 @@ export interface Prize {
   description: string
   image_url: string
   title: string
-  stock: number
-  total: number
+  amount: number
+  assigned_users_count: number
   codes_count: number
 }
