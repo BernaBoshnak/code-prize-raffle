@@ -1,13 +1,50 @@
-import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap'
+import { useState } from 'react'
+import {
+  Button,
+  Card,
+  Col,
+  Container,
+  ListGroup,
+  Row,
+  Alert,
+} from 'react-bootstrap'
+import useAbortController from '@components/hooks/useAbortController'
+import { useAuthContext } from '@components/store/AuthContext'
 import { useUserContext } from '@components/store/UserContext'
+import { formatErrorMessage } from '@components/utils/formMessage'
 import { faBarcode, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { deleteUser } from '@services/models/user'
 
 const UserProfile: React.FC = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const { userData } = useUserContext()
+  const { idToken, logout, localId } = useAuthContext()
+  const controller = useAbortController()
 
   const handleDeleteProfile = () => {
-    // console.log('Profile deleted')
+    setError(null)
+
+    try {
+      setIsLoading(true)
+      if (localId && idToken) {
+        deleteUser(localId, idToken, controller)
+      }
+
+      logout()
+    } catch (e) {
+      const error = e as { message: string }
+
+      const message =
+        e instanceof TypeError // Fetch error (e.g. no internet connection)
+          ? 'Something went wrong!'
+          : formatErrorMessage(error.message)
+
+      setError(message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   if (!userData) {
@@ -22,6 +59,11 @@ const UserProfile: React.FC = () => {
       <Card>
         <Card.Header>
           <h4 className="text-center">Basic information</h4>
+          {error && (
+            <Alert variant="danger">
+              <strong>{error}</strong>
+            </Alert>
+          )}
         </Card.Header>
         <Card.Body className="p-5">
           <Row className="mx-md-5">
@@ -50,7 +92,11 @@ const UserProfile: React.FC = () => {
               <div className="py-1">Username: {userName}</div>
               <div className="py-1">Email: {email}</div>
               <br />
-              <Button variant="danger" onClick={handleDeleteProfile}>
+              <Button
+                variant="danger"
+                onClick={handleDeleteProfile}
+                disabled={isLoading}
+              >
                 Delete Profile
               </Button>
             </Col>

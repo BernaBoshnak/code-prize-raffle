@@ -11,6 +11,7 @@ export type TPrizes = Record<PrizeId, TPrize>
 const Prizes = () => {
   const [prizes, setPrizes] = useState<TPrizes | undefined>()
 
+  // Fetch prizes on page load only
   useEffect(() => {
     getPrizesWithUsersCount().then((prizes) => {
       setPrizes(prizes)
@@ -41,7 +42,12 @@ const Prizes = () => {
         </h3>
         {prizes &&
           Object.entries(prizes).map(([id, prize]) => (
-            <Prize key={id} id={id} {...prize} />
+            <Prize
+              key={id}
+              id={id as PrizeId}
+              {...prize}
+              setPrizes={setPrizes}
+            />
           ))}
       </Container>
     </>
