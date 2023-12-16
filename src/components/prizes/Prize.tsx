@@ -1,12 +1,14 @@
 import { useState } from 'react'
 import { Card, Col, Row } from 'react-bootstrap'
+import { TPrizes } from '@components/prizes/Prizes'
 import { faCoins } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Prize as TPrize } from '@services/api/response/prize'
+import { PrizeId, Prize as TPrize } from '@services/api/response/prize'
 import Modal from './Modal'
 
 export interface PrizeProps extends TPrize {
-  id: string
+  id: PrizeId
+  setPrizes: React.Dispatch<React.SetStateAction<TPrizes | undefined>>
 }
 
 const Prize = (props: PrizeProps) => {
@@ -82,7 +84,12 @@ const Prize = (props: PrizeProps) => {
           </Col>
         </Row>
       </Card>
-      <Modal showModal={showModal} closeModal={closeModal} {...props} />
+      <Modal
+        showModal={showModal}
+        closeModal={closeModal}
+        {...props}
+        setPrizes={props.setPrizes}
+      />
     </>
   )
 }

@@ -1,6 +1,6 @@
-import { TokenData } from '@components/store/AuthContext'
 import { db } from '@services/api/firebase-config'
 import { Prize, PrizeId } from '@services/api/response/prize'
+import { LocalId } from '@services/api/response/register'
 import {
   addDoc,
   collection,
@@ -11,16 +11,17 @@ import {
 } from '@services/firebase/firestore'
 
 type UserPrize = {
-  user_id: TokenData['localId']
-  prize_id: string
+  user_id: LocalId
+  prize_id: PrizeId
 }
 
 export const setUserPrizes = async (data: UserPrize) => {
   const prizeDocRef = doc(db, 'prizes', data.prize_id)
+  const userDocRef = doc(db, 'users', data.user_id)
   const userSubcollectionRef = collection(prizeDocRef, 'user_prizes')
 
   return await addDoc(userSubcollectionRef, {
-    user_id: data.user_id,
+    user_id: userDocRef,
     created_at: serverTimestamp(),
   })
 }

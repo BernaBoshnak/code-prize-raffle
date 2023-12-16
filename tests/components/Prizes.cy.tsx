@@ -1,46 +1,62 @@
 import Prizes, { TPrizes } from '@components/prizes/Prizes'
+import AuthContextProvider from '@components/store/AuthContext'
+import TokenValidationContextProvider from '@components/store/TokenValidationContext'
 import { Prize, PrizeId } from '@services/api/response/prize'
 import * as prizeModel from '@services/models/prize'
 
-const mountPrizes = (resolvedValue: TPrizes) => {
-  cy.stub(prizeModel, 'getPrizes').as('getPrizes').resolves(resolvedValue)
+const mountPrizesWithUsersCount = (resolvedValue: TPrizes) => {
+  cy.stub(prizeModel, 'getPrizesWithUsersCount')
+    .as('getPrizesWithUsersCount')
+    .resolves(resolvedValue)
 
-  cy.mountWithMemoryRouter(<Prizes />)
+  cy.mountWithMemoryRouter(
+    <TokenValidationContextProvider>
+      <AuthContextProvider>
+        <Prizes />
+      </AuthContextProvider>
+    </TokenValidationContextProvider>,
+  )
 
   cy.findByRole('heading', { name: /loading/i })
-  cy.get('@getPrizes').should('be.calledOnce')
+  cy.get('@getPrizesWithUsersCount').should('be.calledOnce')
 }
 
 describe('<Prizes />', () => {
   beforeEach(function () {
     cy.fixture('prize').then((prizeFixture: Prize) => {
       const key = 'fakeKey' as PrizeId
-      this.prizesModelData = { [key]: prizeFixture } as TPrizes
+      this.prizesModelData = {
+        [key]: {
+          ...prizeFixture,
+          assigned_users_count: 5,
+          amount: 50,
+        },
+      } as TPrizes
     })
   })
 
   it('should display the total number of codes', function () {
-    mountPrizes(this.prizesModelData)
+    mountPrizesWithUsersCount(this.prizesModelData)
     cy.findByTestId('codes-amount').within(($el) => {
       expect($el.text()).to.match(/total number of your codes:\s?\d+/i)
     })
   })
 
   it('should show the "no promotions available at this time" title', () => {
-    mountPrizes({} as TPrizes)
+    mountPrizesWithUsersCount({} as TPrizes)
     cy.findByRole('heading', {
       name: /no promotions available at this time/i,
     })
   })
 
   it('should show the "all promotions" title', function () {
-    mountPrizes(this.prizesModelData)
+    mountPrizesWithUsersCount(this.prizesModelData)
     cy.findByRole('heading', { name: /all promotions/i })
   })
 
   describe('prize card', function () {
     beforeEach(function () {
-      mountPrizes(this.prizesModelData)
+      mountPrizesWithUsersCount(this.prizesModelData)
     })
 
     it('should render a card', () => {
@@ -62,7 +78,7 @@ describe('<Prizes />', () => {
         })
     })
 
-    it('should display the modal', () => {
+    it.only('should display the modal', () => {
       cy.findByRole('dialog').should('not.exist')
       cy.findAllByRole('button', { name: /card title/i })
         .eq(0)

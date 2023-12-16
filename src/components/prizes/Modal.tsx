@@ -1,10 +1,18 @@
 import { useState } from 'react'
-import { Modal as BSModal, Button, CloseButton, Image } from 'react-bootstrap'
+import {
+  Modal as BSModal,
+  Button,
+  CloseButton,
+  Image,
+  Alert,
+} from 'react-bootstrap'
 import { PrizeProps } from '@components/prizes/Prize'
 import { useAuthContext } from '@components/store/AuthContext'
+import { formatErrorMessage } from '@components/utils/formMessage'
 import { faUsers } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { setUserPrizes } from '@services/models/prize'
+import { LocalId } from '@services/api/response/register'
+import { getPrizesWithUsersCount, setUserPrizes } from '@services/models/prize'
 
 type ModalProps = {
   showModal: boolean
@@ -20,19 +28,37 @@ const Modal = ({
   amount,
   image_url: imageUrl,
   assigned_users_count: assignedUsersCount,
+  setPrizes,
 }: ModalProps) => {
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const { localId } = useAuthContext()
 
   const handleClick = async () => {
+    setError(null)
     setIsLoading(true)
+
     try {
       await setUserPrizes({
-        user_id: localId,
+        user_id: localId as LocalId,
         prize_id: id,
       })
+
+      // Fetch new prizes
+      getPrizesWithUsersCount().then((prizes) => {
+        setPrizes(prizes)
+      })
+
+      closeModal()
     } catch (e) {
-      // TODO error handling
+      const error = e as { message: string }
+
+      const message =
+        e instanceof TypeError // Fetch error (e.g. no internet connection)
+          ? 'Something went wrong!'
+          : formatErrorMessage(error.message)
+
+      setError(message)
     } finally {
       setIsLoading(false)
     }
@@ -50,6 +76,11 @@ const Modal = ({
         <div className="d-flex justify-content-end">
           <CloseButton onClick={closeModal} />
         </div>
+        {error && (
+          <Alert variant="danger">
+            <strong>{error}</strong>
+          </Alert>
+        )}
         <div className="image-wrapper mt-1 mb-3">
           <Image
             src={imageUrl}
