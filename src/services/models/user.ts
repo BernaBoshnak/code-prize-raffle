@@ -33,11 +33,12 @@ export const deleteUser = async (
   const key = import.meta.env.VITE_REACT_APP_FIREBASE_API_KEY
   const url = `${api}:delete?key=${key}`
 
-  await postJson<LoginResponse>(url, {
+  await postJson(url, {
     body: {
       idToken,
     },
     signal: controller?.signal,
   })
+
   await deleteDoc(doc(db, 'users', localId))
 }

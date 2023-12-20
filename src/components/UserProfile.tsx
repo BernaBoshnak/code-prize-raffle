@@ -23,16 +23,15 @@ const UserProfile: React.FC = () => {
   const { idToken, logout, localId } = useAuthContext()
   const controller = useAbortController()
 
-  const handleDeleteProfile = () => {
+  const handleDeleteProfile = async () => {
     setError(null)
 
     try {
       setIsLoading(true)
       if (localId && idToken) {
-        deleteUser(localId, idToken, controller)
+        await deleteUser(localId, idToken, controller)
+        logout()
       }
-
-      logout()
     } catch (e) {
       const error = e as { message: string }
 
