@@ -1,6 +1,9 @@
+
 # Code Prize Raffle
 
 This is a Code Prize Raffle app built using `React` and `TypeScript` with `Vite`.
+
+### This project is in progress.
 
 ## :scroll: Description
 
